@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Building2, ArrowRight, Star, ChevronDown, Award, Camera, Map } from "lucide-react";
 
 const Museum = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
   const handleStart = () => {
+    // Navigate to museum 3D page (you can create this later)
+    // For now, we'll load the HTML content via iframe or redirect
     window.location.href = '/museum.html';
   };
 
