@@ -652,56 +652,69 @@ const Home = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {chapters.map((ch, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={featuresInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`relative p-8 ${ch.gradient} backdrop-blur-md border border-${ch.color}/30 rounded-3xl hover:scale-[1.02] transition-all duration-500 group cursor-pointer shadow-lg hover:border-${ch.color}/50`}
-                onMouseEnter={() => setActiveFeature(index)}
-              >
-                {/* Emoji Icon */}
-                <div className="text-6xl mb-4">{ch.emoji}</div>
-
-                {/* Chapter Label */}
-                <div className={`text-sm font-bold text-${ch.color} mb-2`}>
-                  {ch.chapter}
-                </div>
-
-                {/* Title */}
-                <h3 className="text-3xl font-bold text-white mb-2">
-                  {ch.title}
-                </h3>
-
-                {/* Subtitle */}
-                <p className="text-slate-400 text-sm mb-6 font-medium">
-                  {ch.subtitle}
-                </p>
-
-                {/* Points */}
-                <ul className="space-y-3">
-                  {ch.points.map((point, i) => (
-                    <li key={i} className="flex items-start gap-3 text-slate-300 text-sm">
-                      <CheckCircle className={`w-4 h-4 text-${ch.color} flex-shrink-0 mt-0.5`} />
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Hover effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                {/* Active indicator */}
-                {activeFeature === index && (
+            {chapters.map((ch, index) => {
+              const chapterRoutes = [ROUTES.CHAPTER_1, ROUTES.CHAPTER_2, ROUTES.CHAPTER_3, ROUTES.CHAPTER_4];
+              return (
+                <Link key={index} to={chapterRoutes[index]} className="no-underline">
                   <motion.div
-                    layoutId="activeChapter"
-                    className={`absolute inset-0 border-2 border-${ch.color} rounded-3xl`}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </motion.div>
-            ))}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className={`relative p-8 ${ch.gradient} backdrop-blur-md border border-${ch.color}/30 rounded-3xl hover:scale-[1.02] transition-all duration-500 group cursor-pointer shadow-lg hover:border-${ch.color}/50`}
+                    onMouseEnter={() => setActiveFeature(index)}
+                  >
+                    {/* Emoji Icon */}
+                    <div className="text-6xl mb-4">{ch.emoji}</div>
+
+                    {/* Chapter Label */}
+                    <div className={`text-sm font-bold text-${ch.color} mb-2`}>
+                      {ch.chapter}
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-3xl font-bold text-white mb-2">
+                      {ch.title}
+                    </h3>
+
+                    {/* Subtitle */}
+                    <p className="text-slate-400 text-sm mb-6 font-medium">
+                      {ch.subtitle}
+                    </p>
+
+                    {/* Points */}
+                    <ul className="space-y-3">
+                      {ch.points.map((point, i) => (
+                        <li key={i} className="flex items-start gap-3 text-slate-300 text-sm">
+                          <CheckCircle className={`w-4 h-4 text-${ch.color} flex-shrink-0 mt-0.5`} />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Hover effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                    {/* Arrow indicator on hover */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -10 }}
+                      whileHover={{ opacity: 1, x: 0 }}
+                      className="absolute bottom-6 right-6 flex items-center justify-center w-10 h-10 bg-white/10 backdrop-blur-md rounded-full group-hover:bg-white/20 transition-all duration-300"
+                    >
+                      <ArrowRight className="w-5 h-5 text-white" />
+                    </motion.div>
+
+                    {/* Active indicator */}
+                    {activeFeature === index && (
+                      <motion.div
+                        layoutId="activeChapter"
+                        className={`absolute inset-0 border-2 border-${ch.color} rounded-3xl`}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                  </motion.div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
