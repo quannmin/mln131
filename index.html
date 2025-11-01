@@ -8,10 +8,14 @@
     <script>
       // Handle redirects from 404.html
       (function() {
-        const redirect = new URLSearchParams(window.location.search).get('redirect');
-        if (redirect) {
-          // Remove query parameter and redirect to the actual route
-          window.history.replaceState({}, document.title, redirect);
+        const route = new URLSearchParams(window.location.search).get('route');
+        if (route) {
+          // Parse the route to get the actual path
+          const routeUrl = new URL(route, window.location.origin);
+          const newPath = routeUrl.pathname + routeUrl.search + routeUrl.hash;
+          
+          // Replace history to remove the 'route' query parameter
+          window.history.replaceState({}, document.title, newPath);
         }
       })();
     </script>
