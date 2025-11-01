@@ -17,7 +17,7 @@ import { ROUTES } from './utils/constants';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/mln131/">
       <Layout>
         <Routes>
           <Route path={ROUTES.HOME} element={<Home />} />
