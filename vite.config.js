@@ -5,7 +5,7 @@ import { resolve } from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-    base: "/",
+    base: "/mln131/",
     plugins: [
         react(),
         {
@@ -13,13 +13,16 @@ export default defineConfig({
             writeBundle() {
                 // Copy museum.html and related files to dist after build
                 try {
-                    copyFileSync(resolve("public/museum.html"), resolve("dist/museum.html"));
+                    copyFileSync(
+                        resolve("public/museum.html"),
+                        resolve("dist/museum.html")
+                    );
                     console.log("✓ Copied museum.html to dist/");
                 } catch (err) {
                     console.warn("Could not copy museum.html:", err.message);
                 }
             },
-        }
+        },
     ],
     build: {
         rollupOptions: {

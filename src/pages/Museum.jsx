@@ -37,11 +37,10 @@ const Museum = () => {
       <section className="relative min-h-screen flex items-center justify-center">
         <div className="text-center max-w-6xl mx-auto">
           <div
-            className={`transform transition-all duration-1000 ${
-              isVisible
+            className={`transform transition-all duration-1000 ${isVisible
                 ? "translate-y-0 opacity-100"
                 : "translate-y-10 opacity-0"
-            }`}
+              }`}
           >
             <div className="mb-6 flex justify-center">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-3xl shadow-2xl">
