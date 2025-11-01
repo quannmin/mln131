@@ -13,7 +13,7 @@ const Museum = () => {
   const handleStart = () => {
     // Navigate to museum 3D page (you can create this later)
     // For now, we'll load the HTML content via iframe or redirect
-    window.location.href = '/museum.html';
+    window.location.href = '/mln131/museum.html';
   };
 
   return (
