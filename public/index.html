@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/mln131/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MLN131</title>
+    <script>
+      // Handle redirects from 404.html
+      (function() {
+        const route = new URLSearchParams(window.location.search).get('route');
+        if (route) {
+          // Parse the route to get the actual path
+          const routeUrl = new URL(route, window.location.origin);
+          const newPath = routeUrl.pathname + routeUrl.search + routeUrl.hash;
+          
+          // Replace history to remove the 'route' query parameter
+          window.history.replaceState({}, document.title, newPath);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./src/main.jsx"></script>
+  </body>
+</html>
