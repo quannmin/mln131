@@ -6,24 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MLN131</title>
     <script>
-      // Redirect all 404s to index.html but preserve the route
-      var path = window.location.pathname;
-      var hash = window.location.hash;
-      var search = window.location.search;
-      
-      // If already on index.html, don't redirect
-      if (path.includes('index.html')) {
-        // Do nothing
-      } else {
-        // Store the original path and redirect to index.html
-        // React Router will handle the path
-        var route = path + search + hash;
-        window.location.replace('/mln131/index.html?route=' + encodeURIComponent(route));
-      }
+      // Redirect all 404s to index.html preserving the route
+      (function() {
+        // Get the current path (without /mln131)
+        var path = window.location.pathname;
+        var search = window.location.search;
+        var hash = window.location.hash;
+        
+        // Store the route for React Router
+        sessionStorage.setItem('redirectUrl', path + search + hash);
+        
+        // Redirect to index.html
+        window.location.replace('/mln131/');
+      })();
     </script>
   </head>
   <body>
     <p>Loading...</p>
   </body>
 </html>
+
 
