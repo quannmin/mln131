@@ -2,11 +2,13 @@ import { motion } from "framer-motion";
 
 const MapLegend = ({ mode = "ethnic", selectedEthnic = null }) => {
   const ethnicLegend = [
-    { color: "#DA251D", label: "Kinh (85.3%)", range: "> 80%" },
-    { color: "#3B82F6", label: "Tày - Thái groups", range: "30-60%" },
-    { color: "#8B5CF6", label: "H'Mông - Dao", range: "50-90%" },
-    { color: "#F97316", label: "Tây Nguyên groups", range: "30-50%" },
-    { color: "#14B8A6", label: "Khmer - Chăm", range: "10-30%" }
+    { color: "#C026D3", label: "Rất cao", range: "≥ 80% DTTS" },
+    { color: "#8B5CF6", label: "Cao", range: "60-79% DTTS" },
+    { color: "#3B82F6", label: "Trung bình cao", range: "40-59% DTTS" },
+    { color: "#10B981", label: "Trung bình", range: "20-39% DTTS" },
+    { color: "#F59E0B", label: "Thấp trung bình", range: "10-19% DTTS" },
+    { color: "#F97316", label: "Thấp", range: "5-9% DTTS" },
+    { color: "#94A3B8", label: "Rất thấp (Kinh)", range: "< 5% DTTS" }
   ];
 
   const policyLegend = [

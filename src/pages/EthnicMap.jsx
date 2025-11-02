@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Map,
@@ -9,9 +9,10 @@ import {
   Hospital,
   Award,
   MapPin,
-  ChevronRight,
   X,
-  Globe
+  Globe,
+  BarChart3,
+  TrendingUp
 } from "lucide-react";
 import { regions, provinces, getProvincesByRegion } from "../data/vietnamProvinces";
 import { ethnicGroups, getEthnicGroupsByRegion } from "../data/ethnicGroups";
@@ -23,10 +24,30 @@ import {
 } from "../data/policyData";
 import MapLegend from "../components/map/MapLegend";
 import ProfessionalVietnamMap from "../components/map/ProfessionalVietnamMap";
+import LeafletVietnamMap from "../components/map/LeafletVietnamMap";
 
 const EthnicMap = () => {
   const [viewMode, setViewMode] = useState("ethnic"); // "ethnic" or "policy"
   const [selectedProvince, setSelectedProvince] = useState(null);
+  const [mapType, setMapType] = useState("leaflet"); // "svg" or "leaflet"
+
+  // Statistics calculation
+  const statistics = useMemo(() => {
+    const allProvinces = Object.values(provinces);
+    const totalPopulation = allProvinces.reduce((sum, p) => sum + p.population, 0);
+    const totalArea = allProvinces.reduce((sum, p) => sum + (p.area || 0), 0);
+    const avgEthnicPercent = allProvinces.reduce((sum, p) => sum + p.ethnicMinorityPercent, 0) / allProvinces.length;
+    const mergedCount = allProvinces.filter(p => p.merged && p.merged.length > 0).length;
+
+    return {
+      totalProvinces: allProvinces.length,
+      totalPopulation: (totalPopulation / 1000000).toFixed(1),
+      totalArea: totalArea.toFixed(0),
+      avgEthnicPercent: avgEthnicPercent.toFixed(1),
+      mergedCount
+    };
+  }, []);
+
 
   const ProvinceDetailSidebar = ({ province }) => {
     const investment = getProvinceInvestment(province.id);
@@ -194,11 +215,11 @@ const EthnicMap = () => {
       </div>
 
       {/* Header */}
-      <div className="container mx-auto px-4 py-12 max-w-7xl relative">
+      <div className="w-full px-4 py-8 relative">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-vietnam rounded-full mb-4">
             <Map className="w-8 h-8 text-white" />
@@ -209,87 +230,167 @@ const EthnicMap = () => {
               54 Dân tộc
             </span>
           </h1>
-          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-8">
             Khám phá phân bố dân tộc và chính sách đầu tư phát triển vùng DTTS
           </p>
+
+          {/* Statistics Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-5xl mx-auto">
+            <div className="bg-slate-800/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <MapPin className="w-5 h-5 text-ethnic-blue" />
+              </div>
+              <div className="text-2xl font-black text-white">{statistics.totalProvinces}</div>
+              <div className="text-xs text-slate-400">Tỉnh thành</div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <Users className="w-5 h-5 text-ethnic-green" />
+              </div>
+              <div className="text-2xl font-black text-white">{statistics.totalPopulation}M</div>
+              <div className="text-xs text-slate-400">Dân số</div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <BarChart3 className="w-5 h-5 text-ethnic-purple" />
+              </div>
+              <div className="text-2xl font-black text-white">{statistics.avgEthnicPercent}%</div>
+              <div className="text-xs text-slate-400">TB DTTS</div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <Globe className="w-5 h-5 text-vietnam-yellow" />
+              </div>
+              <div className="text-2xl font-black text-white">{statistics.totalArea}K</div>
+              <div className="text-xs text-slate-400">km² diện tích</div>
+            </div>
+            <div className="bg-slate-800/50 backdrop-blur-xl border border-white/10 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <TrendingUp className="w-5 h-5 text-ethnic-pink" />
+              </div>
+              <div className="text-2xl font-black text-white">{statistics.mergedCount}</div>
+              <div className="text-xs text-slate-400">Sáp nhập</div>
+            </div>
+          </div>
         </motion.div>
 
-        {/* View Mode Toggle */}
-        <div className="flex justify-center gap-4 mb-8">
-          <button
-            onClick={() => setViewMode("ethnic")}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
-              viewMode === "ethnic"
-                ? "bg-gradient-vietnam text-white shadow-lg"
-                : "bg-slate-800/50 text-slate-400 hover:bg-slate-800"
-            }`}
-          >
-            <Users className="w-5 h-5" />
-            Phân bố Dân tộc
-          </button>
-          <button
-            onClick={() => setViewMode("policy")}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
-              viewMode === "policy"
-                ? "bg-gradient-vietnam text-white shadow-lg"
-                : "bg-slate-800/50 text-slate-400 hover:bg-slate-800"
-            }`}
-          >
-            <DollarSign className="w-5 h-5" />
-            Đầu tư & Chính sách
-          </button>
-        </div>
-
-        {/* Map Container */}
-        <div className="grid lg:grid-cols-12 gap-8 mb-12">
-          {/* Legend - Left Side */}
-          <div className="lg:col-span-3">
-            <MapLegend mode={viewMode} />
-
-            {/* Instructions */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="mt-6 p-4 bg-slate-900/60 backdrop-blur-md border border-slate-700/50 rounded-xl"
+        {/* View Mode & Map Type Toggle */}
+        <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-6">
+          {/* View Mode Toggle */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setViewMode("ethnic")}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                viewMode === "ethnic"
+                  ? "bg-gradient-vietnam text-white shadow-lg"
+                  : "bg-slate-800/50 text-slate-400 hover:bg-slate-800"
+              }`}
             >
-              <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-vietnam-yellow" />
-                Hướng dẫn
-              </h3>
-              <ul className="space-y-2 text-xs text-slate-400">
-                <li className="flex items-start gap-2">
-                  <span>•</span>
-                  <span>Di chuột qua tỉnh để xem thông tin</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span>•</span>
-                  <span>Click vào tỉnh để xem chi tiết</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span>•</span>
-                  <span>Chuyển đổi chế độ xem trên thanh menu</span>
-                </li>
-              </ul>
-            </motion.div>
+              <Users className="w-5 h-5" />
+              Phân bố Dân tộc
+            </button>
+            <button
+              onClick={() => setViewMode("policy")}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                viewMode === "policy"
+                  ? "bg-gradient-vietnam text-white shadow-lg"
+                  : "bg-slate-800/50 text-slate-400 hover:bg-slate-800"
+              }`}
+            >
+              <DollarSign className="w-5 h-5" />
+              Đầu tư & Chính sách
+            </button>
           </div>
 
-          {/* Vietnam Map - Center */}
-          <div className="lg:col-span-9">
+          {/* Map Type Toggle */}
+          <div className="flex gap-3">
+          <button
+            onClick={() => setMapType("leaflet")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              mapType === "leaflet"
+                ? "bg-blue-600 text-white shadow-md"
+                : "bg-slate-800/30 text-slate-400 hover:bg-slate-800/50"
+            }`}
+          >
+            <Globe className="w-4 h-4" />
+            Bản đồ thật (Leaflet)
+          </button>
+            <button
+              onClick={() => setMapType("svg")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                mapType === "svg"
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "bg-slate-800/30 text-slate-400 hover:bg-slate-800/50"
+              }`}
+            >
+              <Map className="w-4 h-4" />
+              Bản đồ SVG
+            </button>
+          </div>
+        </div>
+
+        {/* Map Container - 80% Width */}
+        <div className="mb-8 mx-auto" style={{ width: '80%' }}>
+          {/* Vietnam Map */}
+          <div className="relative">
             <motion.div
+              key={mapType}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="bg-slate-900/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-2xl"
+              className={mapType === "svg" ? "bg-slate-900/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-2xl min-h-[900px]" : "min-h-[900px]"}
             >
-              <ProfessionalVietnamMap
-                mode={viewMode}
-                onProvinceClick={setSelectedProvince}
-                selectedProvince={selectedProvince}
-                provinces={provinces}
-              />
+              {mapType === "leaflet" ? (
+                <LeafletVietnamMap
+                  mode={viewMode}
+                  onProvinceClick={setSelectedProvince}
+                  selectedProvince={selectedProvince}
+                />
+              ) : (
+                <ProfessionalVietnamMap
+                  mode={viewMode}
+                  onProvinceClick={setSelectedProvince}
+                  selectedProvince={selectedProvince}
+                  provinces={provinces}
+                />
+              )}
             </motion.div>
           </div>
+        </div>
+
+        {/* Legend & Instructions - Fixed Bottom Right */}
+        <div className="fixed right-4 bottom-4 z-[999] flex flex-col gap-4 max-w-sm">
+          {/* Legend */}
+          <div className="w-auto">
+            <MapLegend mode={viewMode} />
+          </div>
+
+          {/* Instructions */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="p-4 bg-slate-900/90 backdrop-blur-md border border-slate-700/50 rounded-xl shadow-2xl w-auto"
+          >
+            <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-vietnam-yellow" />
+              Hướng dẫn
+            </h3>
+            <ul className="space-y-2 text-xs text-slate-400">
+              <li className="flex items-start gap-2">
+                <span>•</span>
+                <span>Di chuột qua tỉnh để xem thông tin</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span>•</span>
+                <span>Click vào tỉnh để xem chi tiết</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span>•</span>
+                <span>Chuyển đổi chế độ xem trên thanh menu</span>
+              </li>
+            </ul>
+          </motion.div>
         </div>
 
         {/* Stats Summary */}
@@ -297,7 +398,8 @@ const EthnicMap = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-16 grid md:grid-cols-4 gap-6"
+          className="grid md:grid-cols-4 gap-6 mx-auto"
+          style={{ width: '80%' }}
         >
           <div className="p-6 bg-slate-900/60 backdrop-blur-md border border-slate-700/50 rounded-2xl">
             <DollarSign className="w-8 h-8 text-vietnam-yellow mb-2" />

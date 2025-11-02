@@ -16,6 +16,7 @@ import Breadcrumb from "../../components/learning/Breadcrumb";
 import { useChapterProgress } from "../../hooks/useChapterProgress";
 import { getChapterById } from "../../data/chaptersContent";
 
+import { renderContentWithQuotes } from "../../utils/renderContent";
 const Chapter4 = () => {
   const navigate = useNavigate();
   const chapter = getChapterById(4);
@@ -212,9 +213,9 @@ const Chapter4 = () => {
                           }`}>
                             {conclusion.title}
                           </h3>
-                          <p className="text-slate-200 leading-relaxed">
-                            {conclusion.content}
-                          </p>
+                          <div className="text-slate-200 leading-relaxed">
+                            {renderContentWithQuotes(conclusion.content)}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -232,23 +233,33 @@ const Chapter4 = () => {
                     </h3>
                   </div>
                   {currentSubsection.content.lessons.map((lesson, index) => (
-                    <div
-                      key={index}
-                      className="p-6 bg-ethnic-blue/10 border border-ethnic-blue/30 rounded-2xl"
-                    >
-                      <div className="flex gap-4">
-                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-ethnic-blue to-ethnic-cyan rounded-full flex items-center justify-center font-black text-white text-lg">
-                          {index + 1}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="text-xl font-bold text-ethnic-blue mb-3">
-                            {lesson.title}
-                          </h4>
-                          <p className="text-slate-200 leading-relaxed">
-                            {lesson.content}
-                          </p>
+                    <div key={index}>
+                      <div className="p-6 bg-ethnic-blue/10 border border-ethnic-blue/30 rounded-2xl">
+                        <div className="flex gap-4">
+                          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-ethnic-blue to-ethnic-cyan rounded-full flex items-center justify-center font-black text-white text-lg">
+                            {index + 1}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-xl font-bold text-ethnic-blue mb-3">
+                              {lesson.title}
+                            </h4>
+                            <p className="text-slate-200 leading-relaxed whitespace-pre-line">
+                              {lesson.content}
+                            </p>
+                          </div>
                         </div>
                       </div>
+
+                      {/* Image after lesson content if exists */}
+                      {lesson.image && (
+                        <div className="mt-4 rounded-2xl overflow-hidden border-2 border-ethnic-blue/40 shadow-2xl">
+                          <img
+                            src={lesson.image}
+                            alt={`Hình minh họa cho ${lesson.title}`}
+                            className="w-full h-auto object-contain bg-slate-900/50"
+                          />
+                        </div>
+                      )}
                     </div>
                   ))}
 

@@ -1,258 +1,472 @@
-// Simplified Vietnam provinces data
-// Grouped by regions for better organization
+// Vietnam provinces data - Updated to reflect 2025 administrative mergers
+// Based on gis.vn administrative data showing 35 provinces/cities
 
 export const regions = {
   "dong-bac": {
     name: "Đông Bắc Bộ",
     color: "#3B82F6",
-    provinces: ["ha-giang", "cao-bang", "bac-kan", "lang-son", "tuyen-quang", "thai-nguyen", "bac-giang", "quang-ninh"]
+    provinces: ["bac-ninh", "lang-son", "quang-ninh", "thai-nguyen", "tuyen-quang"]
   },
   "tay-bac": {
     name: "Tây Bắc Bộ",
     color: "#8B5CF6",
-    provinces: ["lai-chau", "son-la", "dien-bien", "hoa-binh"]
+    provinces: ["cao-bang", "dien-bien", "lai-chau", "lao-cai", "phu-tho", "son-la"]
   },
   "dong-bang-song-hong": {
     name: "Đồng bằng sông Hồng",
     color: "#10B981",
-    provinces: ["ha-noi", "hai-phong", "vinh-phuc", "bac-ninh", "hai-duong", "hung-yen", "ha-nam", "nam-dinh", "thai-binh", "ninh-binh"]
+    provinces: ["ha-noi", "hai-phong", "hung-yen", "ninh-binh"]
   },
   "bac-trung-bo": {
     name: "Bắc Trung Bộ",
     color: "#F59E0B",
-    provinces: ["thanh-hoa", "nghe-an", "ha-tinh", "quang-binh", "quang-tri", "thua-thien-hue"]
+    provinces: ["ha-tinh", "hue", "nghe-an", "quang-tri", "thanh-hoa"]
   },
   "nam-trung-bo": {
     name: "Nam Trung Bộ",
     color: "#EC4899",
-    provinces: ["da-nang", "quang-nam", "quang-ngai", "binh-dinh", "phu-yen", "khanh-hoa", "ninh-thuan", "binh-thuan"]
+    provinces: ["da-nang", "dak-lak", "gia-lai", "khanh-hoa", "quang-ngai"]
   },
   "tay-nguyen": {
     name: "Tây Nguyên",
     color: "#EF4444",
-    provinces: ["kon-tum", "gia-lai", "dak-lak", "dak-nong", "lam-dong"]
+    provinces: ["lam-dong"]
   },
   "dong-nam-bo": {
     name: "Đông Nam Bộ",
     color: "#06B6D4",
-    provinces: ["binh-phuoc", "tay-ninh", "binh-duong", "dong-nai", "ba-ria-vung-tau", "tp-hcm"]
+    provinces: ["dong-nai", "tay-ninh", "tp-hcm"]
   },
   "dong-bang-song-cuu-long": {
     name: "Đồng bằng sông Cửu Long",
     color: "#14B8A6",
-    provinces: ["long-an", "tien-giang", "ben-tre", "tra-vinh", "vinh-long", "dong-thap", "an-giang", "kien-giang", "can-tho", "hau-giang", "soc-trang", "bac-lieu", "ca-mau"]
+    provinces: ["an-giang", "ca-mau", "can-tho", "dong-thap", "vinh-long"]
   }
 };
 
 export const provinces = {
-  // Đông Bắc Bộ
-  "ha-giang": {
-    id: "ha-giang",
-    name: "Hà Giang",
+  // Đông Bắc Bộ - 5 provinces
+  "bac-ninh": {
+    id: "bac-ninh",
+    name: "Bắc Ninh",
     region: "dong-bac",
-    population: 850000,
-    ethnicMinorityPercent: 87,
-    dominantEthnic: ["H'Mông", "Dao", "Tày"]
-  },
-  "cao-bang": {
-    id: "cao-bang",
-    name: "Cao Bằng",
-    region: "dong-bac",
-    population: 530000,
-    ethnicMinorityPercent: 93,
-    dominantEthnic: ["Tày", "Nùng", "H'Mông"]
-  },
-  "bac-kan": {
-    id: "bac-kan",
-    name: "Bắc Kạn",
-    region: "dong-bac",
-    population: 310000,
-    ethnicMinorityPercent: 86,
+    area: 4718.61,
+    population: 3619443,
+    density: 767.06,
+    administrativeUnits: 99,
+    merged: ["Bắc Ninh", "Bắc Giang"],
+    ethnicMinorityPercent: 15,
     dominantEthnic: ["Tày", "Dao", "Nùng"]
   },
   "lang-son": {
     id: "lang-son",
     name: "Lạng Sơn",
     region: "dong-bac",
-    population: 780000,
+    area: 8309.67,
+    population: 881384,
+    density: 106.07,
+    administrativeUnits: 65,
+    merged: [],
     ethnicMinorityPercent: 68,
+    dominantEthnic: ["Tày", "Nùng", "Dao"]
+  },
+  "quang-ninh": {
+    id: "quang-ninh",
+    name: "Quảng Ninh",
+    region: "dong-bac",
+    area: 6154.84,
+    population: 1497447,
+    density: 243.30,
+    administrativeUnits: 54,
+    merged: [],
+    ethnicMinorityPercent: 12,
+    dominantEthnic: ["Tày", "Dao", "San Dìu"]
+  },
+  "thai-nguyen": {
+    id: "thai-nguyen",
+    name: "Thái Nguyên",
+    region: "dong-bac",
+    area: 8375.27,
+    population: 1799489,
+    density: 214.86,
+    administrativeUnits: 92,
+    merged: ["Bắc Kạn", "Thái Nguyên"],
+    ethnicMinorityPercent: 60,
     dominantEthnic: ["Tày", "Nùng", "Dao"]
   },
   "tuyen-quang": {
     id: "tuyen-quang",
     name: "Tuyên Quang",
     region: "dong-bac",
-    population: 770000,
-    ethnicMinorityPercent: 58,
+    area: 13795.52,
+    population: 1858056,
+    density: 134.69,
+    administrativeUnits: 124,
+    merged: ["Tuyên Quang", "Hà Giang"],
+    ethnicMinorityPercent: 73,
     dominantEthnic: ["Tày", "Dao", "H'Mông"]
   },
-  "thai-nguyen": {
-    id: "thai-nguyen",
-    name: "Thái Nguyên",
-    region: "dong-bac",
-    population: 1270000,
-    ethnicMinorityPercent: 38,
-    dominantEthnic: ["Tày", "Nùng", "Dao"]
-  },
-  "bac-giang": {
-    id: "bac-giang",
-    name: "Bắc Giang",
-    region: "dong-bac",
-    population: 1830000,
-    ethnicMinorityPercent: 15,
-    dominantEthnic: ["Tày", "Dao"]
-  },
-  "quang-ninh": {
-    id: "quang-ninh",
-    name: "Quảng Ninh",
-    region: "dong-bac",
-    population: 1330000,
-    ethnicMinorityPercent: 12,
-    dominantEthnic: ["Tày", "Dao", "San Dìu"]
-  },
 
-  // Tây Bắc Bộ
-  "lai-chau": {
-    id: "lai-chau",
-    name: "Lai Châu",
+  // Tây Bắc Bộ - 6 provinces
+  "cao-bang": {
+    id: "cao-bang",
+    name: "Cao Bằng",
     region: "tay-bac",
-    population: 460000,
-    ethnicMinorityPercent: 90,
-    dominantEthnic: ["Thái", "H'Mông", "Dao"]
-  },
-  "son-la": {
-    id: "son-la",
-    name: "Sơn La",
-    region: "tay-bac",
-    population: 1260000,
-    ethnicMinorityPercent: 86,
-    dominantEthnic: ["Thái", "H'Mông", "Mường"]
+    area: 6700.38,
+    population: 573119,
+    density: 85.54,
+    administrativeUnits: 56,
+    merged: [],
+    ethnicMinorityPercent: 93,
+    dominantEthnic: ["Tày", "Nùng", "H'Mông"]
   },
   "dien-bien": {
     id: "dien-bien",
     name: "Điện Biên",
     region: "tay-bac",
-    population: 590000,
+    area: 9539.27,
+    population: 673091,
+    density: 70.56,
+    administrativeUnits: 45,
+    merged: [],
     ethnicMinorityPercent: 85,
     dominantEthnic: ["Thái", "H'Mông", "Khơ Mú"]
   },
-  "hoa-binh": {
-    id: "hoa-binh",
-    name: "Hòa Bình",
+  "lai-chau": {
+    id: "lai-chau",
+    name: "Lai Châu",
     region: "tay-bac",
-    population: 860000,
+    area: 9068.73,
+    population: 512601,
+    density: 56.52,
+    administrativeUnits: 38,
+    merged: [],
+    ethnicMinorityPercent: 90,
+    dominantEthnic: ["Thái", "H'Mông", "Dao"]
+  },
+  "lao-cai": {
+    id: "lao-cai",
+    name: "Lào Cai",
+    region: "tay-bac",
+    area: 13256.61,
+    population: 1770645,
+    density: 133.57,
+    administrativeUnits: 99,
+    merged: ["Lào Cai", "Yên Bái"],
     ethnicMinorityPercent: 65,
-    dominantEthnic: ["Mường", "Thái", "Dao"]
+    dominantEthnic: ["H'Mông", "Tày", "Dao"]
+  },
+  "phu-tho": {
+    id: "phu-tho",
+    name: "Phú Thọ",
+    region: "tay-bac",
+    area: 9361.42,
+    population: 4022493,
+    density: 429.69,
+    administrativeUnits: 148,
+    merged: ["Vĩnh Phúc", "Phú Thọ", "Hòa Bình"],
+    ethnicMinorityPercent: 45,
+    dominantEthnic: ["Mường", "Dao", "Thái"]
+  },
+  "son-la": {
+    id: "son-la",
+    name: "Sơn La",
+    region: "tay-bac",
+    area: 14108.89,
+    population: 1404587,
+    density: 99.55,
+    administrativeUnits: 75,
+    merged: [],
+    ethnicMinorityPercent: 86,
+    dominantEthnic: ["Thái", "H'Mông", "Mường"]
   },
 
-  // Tây Nguyên
-  "kon-tum": {
-    id: "kon-tum",
-    name: "Kon Tum",
-    region: "tay-nguyen",
-    population: 530000,
-    ethnicMinorityPercent: 54,
-    dominantEthnic: ["Ba Na", "Xơ Đăng", "Gia Rai"]
+  // Đồng bằng sông Hồng - 4 provinces/cities
+  "ha-noi": {
+    id: "ha-noi",
+    name: "Hà Nội",
+    region: "dong-bang-song-hong",
+    area: 3359.77,
+    population: 8807523,
+    density: 2621.47,
+    administrativeUnits: 126,
+    merged: [],
+    ethnicMinorityPercent: 2,
+    dominantEthnic: ["Kinh", "Mường"]
   },
-  "gia-lai": {
-    id: "gia-lai",
-    name: "Gia Lai",
-    region: "tay-nguyen",
-    population: 1520000,
-    ethnicMinorityPercent: 39,
-    dominantEthnic: ["Gia Rai", "Ba Na", "Ê Đê"]
+  "hai-phong": {
+    id: "hai-phong",
+    name: "Hải Phòng",
+    region: "dong-bang-song-hong",
+    area: 3194.73,
+    population: 4664124,
+    density: 1459.94,
+    administrativeUnits: 114,
+    merged: ["Hải Dương", "Hải Phòng"],
+    ethnicMinorityPercent: 2,
+    dominantEthnic: ["Kinh", "Hoa"]
+  },
+  "hung-yen": {
+    id: "hung-yen",
+    name: "Hưng Yên",
+    region: "dong-bang-song-hong",
+    area: 2514.81,
+    population: 3567943,
+    density: 1418.77,
+    administrativeUnits: 104,
+    merged: ["Hưng Yên", "Thái Bình"],
+    ethnicMinorityPercent: 1,
+    dominantEthnic: ["Kinh"]
+  },
+  "ninh-binh": {
+    id: "ninh-binh",
+    name: "Ninh Bình",
+    region: "dong-bang-song-hong",
+    area: 3821.39,
+    population: 4412264,
+    density: 1154.62,
+    administrativeUnits: 129,
+    merged: ["Hà Nam", "Ninh Bình", "Nam Định"],
+    ethnicMinorityPercent: 2,
+    dominantEthnic: ["Kinh", "Mường"]
+  },
+
+  // Bắc Trung Bộ - 5 provinces/cities
+  "ha-tinh": {
+    id: "ha-tinh",
+    name: "Hà Tĩnh",
+    region: "bac-trung-bo",
+    area: 5994.85,
+    population: 1623061,
+    density: 270.74,
+    administrativeUnits: 69,
+    merged: [],
+    ethnicMinorityPercent: 3,
+    dominantEthnic: ["Kinh"]
+  },
+  "hue": {
+    id: "hue",
+    name: "Huế",
+    region: "bac-trung-bo",
+    area: 4947.14,
+    population: 1432986,
+    density: 289.66,
+    administrativeUnits: 40,
+    merged: [],
+    ethnicMinorityPercent: 5,
+    dominantEthnic: ["Kinh", "Bru - Vân Kiều"]
+  },
+  "nghe-an": {
+    id: "nghe-an",
+    name: "Nghệ An",
+    region: "bac-trung-bo",
+    area: 16486.49,
+    population: 3831694,
+    density: 232.41,
+    administrativeUnits: 130,
+    merged: [],
+    ethnicMinorityPercent: 12,
+    dominantEthnic: ["Kinh", "Thái"]
+  },
+  "quang-tri": {
+    id: "quang-tri",
+    name: "Quảng Trị",
+    region: "bac-trung-bo",
+    area: 12699.99,
+    population: 1870844,
+    density: 147.31,
+    administrativeUnits: 78,
+    merged: ["Quảng Trị", "Quảng Bình"],
+    ethnicMinorityPercent: 10,
+    dominantEthnic: ["Kinh", "Bru - Vân Kiều"]
+  },
+  "thanh-hoa": {
+    id: "thanh-hoa",
+    name: "Thanh Hóa",
+    region: "bac-trung-bo",
+    area: 11114.78,
+    population: 4320947,
+    density: 388.76,
+    administrativeUnits: 166,
+    merged: [],
+    ethnicMinorityPercent: 18,
+    dominantEthnic: ["Kinh", "Thái", "Mường"]
+  },
+
+  // Nam Trung Bộ - 5 provinces/cities
+  "da-nang": {
+    id: "da-nang",
+    name: "Đà Nẵng",
+    region: "nam-trung-bo",
+    area: 11913.08,
+    population: 3122915,
+    density: 262.14,
+    administrativeUnits: 94,
+    merged: ["Đà Nẵng", "Quảng Nam"],
+    ethnicMinorityPercent: 3,
+    dominantEthnic: ["Kinh", "Cơ Tu"]
   },
   "dak-lak": {
     id: "dak-lak",
     name: "Đắk Lắk",
-    region: "tay-nguyen",
-    population: 1910000,
-    ethnicMinorityPercent: 34,
+    region: "nam-trung-bo",
+    area: 18096.37,
+    population: 3346853,
+    density: 184.95,
+    administrativeUnits: 102,
+    merged: ["Đắk Lắk", "Phú Yên"],
+    ethnicMinorityPercent: 37,
     dominantEthnic: ["Ê Đê", "M'Nông", "Tày"]
   },
-  "dak-nong": {
-    id: "dak-nong",
-    name: "Đắk Nông",
-    region: "tay-nguyen",
-    population: 630000,
-    ethnicMinorityPercent: 41,
-    dominantEthnic: ["Ê Đê", "M'Nông", "Tày"]
+  "gia-lai": {
+    id: "gia-lai",
+    name: "Gia Lai",
+    region: "nam-trung-bo",
+    area: 21576.56,
+    population: 3583691,
+    density: 166.09,
+    administrativeUnits: 135,
+    merged: ["Gia Lai", "Bình Định"],
+    ethnicMinorityPercent: 47,
+    dominantEthnic: ["Gia Rai", "Ba Na", "Ê Đê"]
   },
+  "khanh-hoa": {
+    id: "khanh-hoa",
+    name: "Khánh Hòa",
+    region: "nam-trung-bo",
+    area: 8556.10,
+    population: 2243553,
+    density: 262.22,
+    administrativeUnits: 65,
+    merged: ["Khánh Hòa", "Ninh Thuận"],
+    ethnicMinorityPercent: 12,
+    dominantEthnic: ["Kinh", "Chăm", "Ra Glai"]
+  },
+  "quang-ngai": {
+    id: "quang-ngai",
+    name: "Quảng Ngãi",
+    region: "nam-trung-bo",
+    area: 14832.53,
+    population: 2161735,
+    density: 145.74,
+    administrativeUnits: 96,
+    merged: ["Quảng Ngãi", "Kon Tum"],
+    ethnicMinorityPercent: 32,
+    dominantEthnic: ["Kinh", "Ba Na", "Xơ Đăng"]
+  },
+
+  // Tây Nguyên - 1 province
   "lam-dong": {
     id: "lam-dong",
     name: "Lâm Đồng",
     region: "tay-nguyen",
-    population: 1310000,
-    ethnicMinorityPercent: 25,
+    area: 24243.13,
+    population: 3872999,
+    density: 159.76,
+    administrativeUnits: 124,
+    merged: ["Lâm Đồng", "Đắk Nông", "Bình Thuận"],
+    ethnicMinorityPercent: 30,
     dominantEthnic: ["K'Ho", "Chơ Ro", "M'Nông"]
   },
 
-  // Đồng bằng sông Cửu Long
+  // Đông Nam Bộ - 3 provinces/cities
+  "dong-nai": {
+    id: "dong-nai",
+    name: "Đồng Nai",
+    region: "dong-nam-bo",
+    area: 12737.36,
+    population: 4491408,
+    density: 352.62,
+    administrativeUnits: 95,
+    merged: ["Đồng Nai", "Bình Phước"],
+    ethnicMinorityPercent: 10,
+    dominantEthnic: ["Kinh", "Hoa"]
+  },
+  "tay-ninh": {
+    id: "tay-ninh",
+    name: "Tây Ninh",
+    region: "dong-nam-bo",
+    area: 8536.41,
+    population: 3254170,
+    density: 381.21,
+    administrativeUnits: 96,
+    merged: ["Tây Ninh", "Long An"],
+    ethnicMinorityPercent: 5,
+    dominantEthnic: ["Kinh", "Hoa"]
+  },
+  "tp-hcm": {
+    id: "tp-hcm",
+    name: "TP. Hồ Chí Minh",
+    region: "dong-nam-bo",
+    area: 6780.43,
+    population: 14668098,
+    density: 2163.30,
+    administrativeUnits: 168,
+    merged: ["TP. Hồ Chí Minh", "Bà Rịa - Vũng Tàu", "Bình Dương"],
+    ethnicMinorityPercent: 2,
+    dominantEthnic: ["Kinh", "Hoa"]
+  },
+
+  // Đồng bằng sông Cửu Long - 5 provinces/cities
   "an-giang": {
     id: "an-giang",
     name: "An Giang",
     region: "dong-bang-song-cuu-long",
-    population: 2160000,
-    ethnicMinorityPercent: 8,
+    area: 9986.95,
+    population: 4995214,
+    density: 500.17,
+    administrativeUnits: 102,
+    merged: ["An Giang", "Kiên Giang"],
+    ethnicMinorityPercent: 10,
     dominantEthnic: ["Khmer", "Hoa", "Chăm"]
   },
-  "kien-giang": {
-    id: "kien-giang",
-    name: "Kiên Giang",
+  "ca-mau": {
+    id: "ca-mau",
+    name: "Cà Mau",
     region: "dong-bang-song-cuu-long",
-    population: 1810000,
-    ethnicMinorityPercent: 11,
-    dominantEthnic: ["Khmer", "Hoa"]
-  },
-  "soc-trang": {
-    id: "soc-trang",
-    name: "Sóc Trăng",
-    region: "dong-bang-song-cuu-long",
-    population: 1310000,
-    ethnicMinorityPercent: 30,
-    dominantEthnic: ["Khmer", "Hoa"]
-  },
-  "tra-vinh": {
-    id: "tra-vinh",
-    name: "Trà Vinh",
-    region: "dong-bang-song-cuu-long",
-    population: 1030000,
-    ethnicMinorityPercent: 31,
+    area: 6310.45,
+    population: 1988464,
+    density: 315.11,
+    administrativeUnits: 64,
+    merged: ["Cà Mau", "Bạc Liêu"],
+    ethnicMinorityPercent: 20,
     dominantEthnic: ["Khmer", "Hoa"]
   },
   "can-tho": {
     id: "can-tho",
     name: "Cần Thơ",
     region: "dong-bang-song-cuu-long",
-    population: 1280000,
-    ethnicMinorityPercent: 5,
-    dominantEthnic: ["Hoa", "Khmer"]
+    area: 6360.82,
+    population: 4199788,
+    density: 660.26,
+    administrativeUnits: 103,
+    merged: ["Cần Thơ", "Sóc Trăng", "Hậu Giang"],
+    ethnicMinorityPercent: 8,
+    dominantEthnic: ["Khmer", "Hoa"]
   },
-
-  // Sample for other provinces (simplified)
-  "ha-noi": {
-    id: "ha-noi",
-    name: "Hà Nội",
-    region: "dong-bang-song-hong",
-    population: 8300000,
-    ethnicMinorityPercent: 2,
-    dominantEthnic: ["Kinh"]
+  "dong-thap": {
+    id: "dong-thap",
+    name: "Đồng Tháp",
+    region: "dong-bang-song-cuu-long",
+    area: 5939,
+    population: 4370046,
+    density: 735.82,
+    administrativeUnits: 102,
+    merged: ["Tiền Giang", "Đồng Tháp"],
+    ethnicMinorityPercent: 6,
+    dominantEthnic: ["Khmer", "Hoa"]
   },
-  "tp-hcm": {
-    id: "tp-hcm",
-    name: "TP. Hồ Chí Minh",
-    region: "dong-nam-bo",
-    population: 9100000,
-    ethnicMinorityPercent: 1,
-    dominantEthnic: ["Kinh"]
-  },
-  "da-nang": {
-    id: "da-nang",
-    name: "Đà Nẵng",
-    region: "nam-trung-bo",
-    population: 1200000,
-    ethnicMinorityPercent: 1,
-    dominantEthnic: ["Kinh"]
+  "vinh-long": {
+    id: "vinh-long",
+    name: "Vĩnh Long",
+    region: "dong-bang-song-cuu-long",
+    area: 6243.18,
+    population: 4257581,
+    density: 681.96,
+    administrativeUnits: 124,
+    merged: ["Vĩnh Long", "Bến Tre", "Trà Vinh"],
+    ethnicMinorityPercent: 20,
+    dominantEthnic: ["Khmer", "Hoa"]
   }
 };
 
@@ -266,3 +480,11 @@ export const getProvincesByRegion = (regionId) => {
 
 // Get region info
 export const getRegion = (id) => regions[id];
+
+// Get total number of provinces
+export const getTotalProvinces = () => Object.keys(provinces).length;
+
+// Get provinces that were merged
+export const getMergedProvinces = () => {
+  return Object.values(provinces).filter(p => p.merged && p.merged.length > 0);
+};

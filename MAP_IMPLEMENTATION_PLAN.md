@@ -13,7 +13,7 @@
 ### Files Created:
 ```
 src/data/
-  ├── vietnamProvinces.js      ✅ 30+ provinces with metadata
+  ├── vietnamProvinces.js      ✅ 35 provinces with metadata (updated for 2025 mergers)
   ├── ethnicGroups.js          ✅ 18 ethnic groups (54 total planned)
   ├── vietnamGeoJSON.js        ✅ Real lat/lng coordinates
   └── policyData.js            ✅ Investment, UNESCO, poverty data
@@ -389,10 +389,10 @@ src/
 ## 🐛 Known Issues & Limitations
 
 ### Current Limitations:
-1. **Coverage:** Only 24/63 provinces (38%)
+1. **Coverage:** 35/35 provinces (100% - updated for 2025 administrative mergers)
 2. **Mobile:** Sidebar could be better optimized
-3. **Performance:** Could lag with 63 provinces (needs virtualization)
-4. **GeoJSON:** Simplified coordinates (not 100% accurate)
+3. **Performance:** Optimized for 35 provinces (reduced from 63 due to mergers)
+4. **GeoJSON:** Needs updating to reflect new merged province boundaries
 5. **Zoom:** No zoom/pan functionality yet
 
 ### Bug Fixes Applied:

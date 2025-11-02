@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
+import { ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
 import { vietnamGeoJSON, vietnamBounds } from "../../data/vietnamGeoJSON";
 
 const ProfessionalVietnamMap = ({
@@ -10,6 +11,10 @@ const ProfessionalVietnamMap = ({
 }) => {
   const [hoveredProvince, setHoveredProvince] = useState(null);
   const [scale, setScale] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const svgRef = useRef(null);
 
   // Convert lat/lng to SVG coordinates (Mercator-like projection)
   const project = (lng, lat) => {
@@ -35,7 +40,7 @@ const ProfessionalVietnamMap = ({
     }).join(' ');
   };
 
-  // Get color for province based on mode
+  // Vibrant color palette inspired by GIS map
   const getProvinceColor = (provinceId) => {
     const province = provinces[provinceId];
     if (!province) return "#374151";
@@ -45,17 +50,21 @@ const ProfessionalVietnamMap = ({
     }
 
     if (hoveredProvince === provinceId) {
-      return "#F59E0B"; // Amber on hover
+      return "#FCD34D"; // Bright yellow on hover
     }
 
     if (mode === "ethnic") {
+      // Vibrant GIS-inspired colors based on ethnic minority percentage
       const percent = province.ethnicMinorityPercent;
-      if (percent >= 80) return "#A855F7"; // Purple - Very high
-      if (percent >= 50) return "#3B82F6"; // Blue - High
-      if (percent >= 30) return "#10B981"; // Green - Medium
-      if (percent >= 10) return "#F97316"; // Orange - Low
-      return "#6B7280"; // Gray - Very low/Kinh majority
+      if (percent >= 80) return "#C026D3"; // Vibrant Magenta - Very high
+      if (percent >= 60) return "#8B5CF6"; // Vibrant Purple - High
+      if (percent >= 40) return "#3B82F6"; // Vibrant Blue - Medium-high
+      if (percent >= 20) return "#10B981"; // Vibrant Green - Medium
+      if (percent >= 10) return "#F59E0B"; // Vibrant Orange - Low-medium
+      if (percent >= 5) return "#F97316"; // Vibrant Coral - Low
+      return "#94A3B8"; // Light Gray - Very low/Kinh majority
     } else {
+      // Policy mode with investment-based colors
       const investment = (province.population / 100000) * province.ethnicMinorityPercent;
       if (investment >= 1000) return "#DC2626"; // Red - Highest
       if (investment >= 500) return "#F97316"; // Orange
@@ -99,49 +108,153 @@ const ProfessionalVietnamMap = ({
     return { x: 0, y: 0 };
   };
 
+  // Zoom controls
+  const handleZoomIn = () => {
+    setScale(prev => Math.min(prev + 0.3, 3));
+  };
+
+  const handleZoomOut = () => {
+    setScale(prev => Math.max(prev - 0.3, 0.5));
+  };
+
+  const handleResetView = () => {
+    setScale(1);
+    setOffset({ x: 0, y: 0 });
+  };
+
+  // Pan controls
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - offset.x,
+      y: e.clientY - offset.y
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    setOffset({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
   return (
-    <div className="relative w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 rounded-2xl overflow-hidden">
+    <div className="relative w-full bg-gradient-to-br from-sky-950 via-blue-950 to-slate-950 rounded-2xl overflow-hidden shadow-2xl border border-sky-800/30">
+      {/* Zoom Controls */}
+      <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleZoomIn}
+          className="p-3 bg-slate-800/90 backdrop-blur-xl border border-white/10 rounded-xl hover:bg-slate-700/90 transition-colors shadow-lg"
+          title="Phóng to"
+        >
+          <ZoomIn className="w-5 h-5 text-white" />
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleZoomOut}
+          className="p-3 bg-slate-800/90 backdrop-blur-xl border border-white/10 rounded-xl hover:bg-slate-700/90 transition-colors shadow-lg"
+          title="Thu nhỏ"
+        >
+          <ZoomOut className="w-5 h-5 text-white" />
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleResetView}
+          className="p-3 bg-slate-800/90 backdrop-blur-xl border border-white/10 rounded-xl hover:bg-slate-700/90 transition-colors shadow-lg"
+          title="Đặt lại"
+        >
+          <Maximize2 className="w-5 h-5 text-white" />
+        </motion.button>
+      </div>
+
+      {/* Zoom indicator */}
+      <div className="absolute top-4 left-4 z-30 px-3 py-2 bg-slate-800/90 backdrop-blur-xl border border-white/10 rounded-lg">
+        <span className="text-white text-sm font-medium">{(scale * 100).toFixed(0)}%</span>
+      </div>
+
       {/* SVG Container */}
-      <svg
-        viewBox="0 0 800 1200"
-        className="w-full h-auto"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ maxHeight: '800px' }}
+      <div
+        className={`w-full ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
-        {/* Background gradient */}
+        <svg
+          ref={svgRef}
+          viewBox="0 0 800 1200"
+          className="w-full h-auto"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{
+            maxHeight: '800px',
+            transform: `scale(${scale}) translate(${offset.x / scale}px, ${offset.y / scale}px)`,
+            transformOrigin: 'center',
+            transition: isDragging ? 'none' : 'transform 0.2s ease-out'
+          }}
+        >
+        {/* Background gradient - Ocean theme */}
         <defs>
-          <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0F172A" stopOpacity="1" />
-            <stop offset="50%" stopColor="#1E293B" stopOpacity="1" />
-            <stop offset="100%" stopColor="#0F172A" stopOpacity="1" />
+          {/* Ocean gradient - darker blue like in GIS map */}
+          <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#0C4A6E" stopOpacity="1" />
+            <stop offset="50%" stopColor="#075985" stopOpacity="1" />
+            <stop offset="100%" stopColor="#0369A1" stopOpacity="1" />
           </linearGradient>
+
+          {/* Radial gradient for ocean depth effect */}
+          <radialGradient id="oceanDepth">
+            <stop offset="0%" stopColor="#0EA5E9" stopOpacity="0.3" />
+            <stop offset="50%" stopColor="#0284C7" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#0C4A6E" stopOpacity="0.1" />
+          </radialGradient>
 
           {/* Glow effect for selected province */}
           <filter id="glow">
-            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
 
-          {/* Drop shadow for provinces */}
+          {/* Drop shadow for provinces - stronger */}
           <filter id="shadow">
-            <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.3"/>
+            <feDropShadow dx="1" dy="2" stdDeviation="4" floodOpacity="0.4"/>
+          </filter>
+
+          {/* 3D emboss effect for provinces */}
+          <filter id="emboss">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
+            <feSpecularLighting in="blur" surfaceScale="3" specularConstant="0.8" specularExponent="20" lighting-color="white" result="spec">
+              <fePointLight x="-5000" y="-10000" z="10000"/>
+            </feSpecularLighting>
+            <feComposite in="spec" in2="SourceAlpha" operator="in" result="specOut"/>
+            <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
           </filter>
         </defs>
 
-        <rect width="800" height="1200" fill="url(#bgGradient)" />
+        {/* Ocean background */}
+        <rect width="800" height="1200" fill="url(#oceanGradient)" />
 
-        {/* Subtle grid pattern */}
-        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1E293B" strokeWidth="0.5" opacity="0.3"/>
+        {/* Ocean depth effects - East Sea (Biển Đông) */}
+        <ellipse cx="700" cy="400" rx="250" ry="400" fill="url(#oceanDepth)" />
+        <ellipse cx="600" cy="800" rx="200" ry="300" fill="url(#oceanDepth)" />
+
+        {/* Water texture pattern */}
+        <pattern id="waterTexture" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M 0 30 Q 15 25, 30 30 T 60 30" stroke="#0EA5E9" strokeWidth="0.5" fill="none" opacity="0.15"/>
+          <path d="M 0 35 Q 15 30, 30 35 T 60 35" stroke="#0EA5E9" strokeWidth="0.5" fill="none" opacity="0.1"/>
         </pattern>
-        <rect width="800" height="1200" fill="url(#grid)" />
-
-        {/* Ocean/Sea circles */}
-        <circle cx="700" cy="600" r="200" fill="#1E293B" opacity="0.2" />
-        <circle cx="200" cy="1000" r="150" fill="#1E293B" opacity="0.2" />
+        <rect width="800" height="1200" fill="url(#waterTexture)" />
 
         {/* Province paths */}
         <g>
@@ -159,11 +272,18 @@ const ProfessionalVietnamMap = ({
                 <motion.path
                   d={feature.path}
                   fill={getProvinceColor(feature.id)}
-                  stroke={isSelected ? "#FFCD00" : isHovered ? "#F59E0B" : "#1E293B"}
+                  stroke={isSelected ? "#FFCD00" : isHovered ? "#FCD34D" : "#0C4A6E"}
                   strokeWidth={getStrokeWidth(feature.id)}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
                   className="cursor-pointer transition-all duration-200"
                   style={{
-                    filter: isSelected ? "url(#glow)" : isHovered ? "url(#shadow)" : "none"
+                    filter: isSelected
+                      ? "url(#glow) drop-shadow(0 4px 8px rgba(0,0,0,0.5))"
+                      : isHovered
+                      ? "url(#shadow) brightness(1.1)"
+                      : "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
+                    paintOrder: "stroke fill"
                   }}
                   initial={false}
                   animate={{
@@ -202,14 +322,30 @@ const ProfessionalVietnamMap = ({
           })}
         </g>
 
-        {/* Title */}
-        <text x="400" y="40" fill="white" fontSize="24" fontWeight="bold" textAnchor="middle">
-          VIỆT NAM
-        </text>
-        <text x="400" y="65" fill="#94A3B8" fontSize="12" textAnchor="middle">
-          {mode === "ethnic" ? "Phân bố 54 Dân tộc" : "Đầu tư Vùng DTTS"}
-        </text>
+        {/* Title with enhanced styling */}
+        <g>
+          {/* Title background */}
+          <rect x="200" y="15" width="400" height="80" rx="12" fill="#0F172A" fillOpacity="0.8" />
+          <rect x="200" y="15" width="400" height="80" rx="12" fill="none" stroke="#0EA5E9" strokeWidth="1" strokeOpacity="0.3" />
+
+          {/* Main title */}
+          <text x="400" y="45" fill="#FFCD00" fontSize="28" fontWeight="bold" textAnchor="middle"
+                style={{ textShadow: "0 0 10px rgba(255,205,0,0.5)" }}>
+            VIỆT NAM
+          </text>
+
+          {/* Subtitle */}
+          <text x="400" y="68" fill="#E0E7FF" fontSize="13" textAnchor="middle" fontWeight="600">
+            {mode === "ethnic" ? "Phân bố 54 Dân tộc" : "Đầu tư Vùng DTTS"}
+          </text>
+
+          {/* Province count */}
+          <text x="400" y="86" fill="#94A3B8" fontSize="10" textAnchor="middle">
+            35 tỉnh thành • Cập nhật 2025
+          </text>
+        </g>
       </svg>
+      </div>
 
       {/* Modern Glassmorphic Tooltip */}
       <AnimatePresence>

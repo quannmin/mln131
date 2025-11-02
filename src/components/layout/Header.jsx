@@ -10,6 +10,7 @@ const Header = () => {
   const navigation = [
     { name: "Trang chủ", href: ROUTES.HOME },
     { name: "Vấn đề Dân tộc", href: ROUTES.ETHNIC_CONCEPT },
+    { name: "Bản đồ 54 Dân tộc", href: ROUTES.ETHNIC_MAP },
     { name: "So sánh Quan điểm", href: ROUTES.ETHNIC_DEBATE },
     { name: "Bảo tàng", href: ROUTES.MUSEUM },
     { name: "Trắc nghiệm", href: ROUTES.QUIZ },

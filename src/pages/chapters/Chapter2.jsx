@@ -15,6 +15,7 @@ import {
 import Breadcrumb from "../../components/learning/Breadcrumb";
 import { useChapterProgress } from "../../hooks/useChapterProgress";
 import { getChapterById } from "../../data/chaptersContent";
+import { renderContentWithQuotes } from "../../utils/renderContent";
 
 const Chapter2 = () => {
   const navigate = useNavigate();
@@ -192,8 +193,8 @@ const Chapter2 = () => {
                       <h3 className="text-2xl font-bold text-white mb-4">
                         {section.title}
                       </h3>
-                      <div className="text-slate-200 leading-relaxed whitespace-pre-line">
-                        {section.content}
+                      <div className="text-slate-200 leading-relaxed">
+                        {renderContentWithQuotes(section.content)}
                       </div>
                     </div>
                   ))}
@@ -204,28 +205,53 @@ const Chapter2 = () => {
               {currentSubsection.content.achievements && (
                 <div className="space-y-6 mb-8">
                   {currentSubsection.content.achievements.map((achievement, index) => (
-                    <div
-                      key={index}
-                      className="p-6 bg-ethnic-green/10 border border-ethnic-green/30 rounded-2xl"
-                    >
-                      <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-ethnic-green to-ethnic-emerald rounded-full flex items-center justify-center">
-                          <TrendingUp className="w-6 h-6 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold text-ethnic-green mb-3">
-                            {achievement.category}
-                          </h3>
-                          <ul className="space-y-2">
-                            {achievement.items.map((item, itemIndex) => (
-                              <li key={itemIndex} className="flex items-start gap-3">
-                                <CheckCircle className="w-5 h-5 text-ethnic-green flex-shrink-0 mt-0.5" />
-                                <span className="text-slate-200">{item}</span>
-                              </li>
-                            ))}
-                          </ul>
+                    <div key={index}>
+                      <div className="p-6 bg-ethnic-green/10 border border-ethnic-green/30 rounded-2xl">
+                        <div className="flex items-start gap-4">
+                          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-ethnic-green to-ethnic-emerald rounded-full flex items-center justify-center">
+                            <TrendingUp className="w-6 h-6 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-xl font-bold text-ethnic-green mb-3">
+                              {achievement.category}
+                            </h3>
+                            <ul className="space-y-2">
+                              {achievement.items.map((item, itemIndex) => (
+                                <li key={itemIndex} className="flex items-start gap-3">
+                                  <CheckCircle className="w-5 h-5 text-ethnic-green flex-shrink-0 mt-0.5" />
+                                  <span className="text-slate-200">{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         </div>
                       </div>
+
+                      {/* Single image after achievement content if exists */}
+                      {achievement.image && (
+                        <div className="mt-4 rounded-2xl overflow-hidden border-2 border-ethnic-green/40 shadow-2xl">
+                          <img
+                            src={achievement.image}
+                            alt={`Hình minh họa cho ${achievement.category}`}
+                            className="w-full h-auto object-contain bg-slate-900/50"
+                          />
+                        </div>
+                      )}
+
+                      {/* Multiple images in grid (2 columns) if exists */}
+                      {achievement.images && achievement.images.length > 0 && (
+                        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {achievement.images.map((imgSrc, imgIndex) => (
+                            <div key={imgIndex} className="rounded-2xl overflow-hidden border-2 border-ethnic-green/40 shadow-2xl">
+                              <img
+                                src={imgSrc}
+                                alt={`Hình minh họa ${imgIndex + 1} cho ${achievement.category}`}
+                                className="w-full h-auto object-contain bg-slate-900/50"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

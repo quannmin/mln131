@@ -12,6 +12,7 @@ import {
 import Breadcrumb from "../../components/learning/Breadcrumb";
 import { useChapterProgress } from "../../hooks/useChapterProgress";
 import { getChapterById } from "../../data/chaptersContent";
+import { renderContentWithQuotes } from "../../utils/renderContent";
 
 const Chapter1 = () => {
   const navigate = useNavigate();
@@ -188,6 +189,17 @@ const Chapter1 = () => {
                 </p>
               )}
 
+              {/* Image after intro if exists */}
+              {currentSubsection.content.image && (
+                <div className="mb-8 rounded-2xl overflow-hidden border-2 border-yellow-600/40 shadow-2xl">
+                  <img
+                    src={currentSubsection.content.image}
+                    alt={`Hình minh họa cho ${currentSubsection.title}`}
+                    className="w-full h-auto object-contain bg-slate-900/50"
+                  />
+                </div>
+              )}
+
               {/* Quote if exists */}
               {currentSubsection.content.quote && (
                 <div className="mb-8 p-6 bg-gradient-to-r from-vietnam-red/10 to-vietnam-yellow/10 border-l-4 border-vietnam-yellow rounded-r-2xl">
@@ -201,16 +213,26 @@ const Chapter1 = () => {
               {currentSubsection.content.sections && (
                 <div className="space-y-6 mb-8">
                   {currentSubsection.content.sections.map((section, index) => (
-                    <div
-                      key={index}
-                      className="p-6 bg-yellow-800/20 rounded-2xl border border-yellow-600/30"
-                    >
-                      <h3 className="text-2xl font-bold text-white mb-4">
-                        {section.title}
-                      </h3>
-                      <div className="text-slate-200 leading-relaxed whitespace-pre-line">
-                        {section.content}
+                    <div key={index}>
+                      <div className="p-6 bg-yellow-800/20 rounded-2xl border border-yellow-600/30">
+                        <h3 className="text-2xl font-bold text-white mb-4">
+                          {section.title}
+                        </h3>
+                        <div className="text-slate-200 leading-relaxed">
+                          {renderContentWithQuotes(section.content)}
+                        </div>
                       </div>
+
+                      {/* Image after section content if exists */}
+                      {section.image && (
+                        <div className="mt-4 rounded-2xl overflow-hidden border-2 border-yellow-600/40 shadow-2xl">
+                          <img
+                            src={section.image}
+                            alt={`Hình minh họa cho ${section.title}`}
+                            className="w-full h-auto object-contain bg-slate-900/50"
+                          />
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

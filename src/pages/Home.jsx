@@ -101,7 +101,7 @@ const Home = () => {
 
   const stats = [
     { number: 54, suffix: "", label: "Dân tộc anh em", color: "text-vietnam-yellow" },
-    { number: 85.3, suffix: "%", label: "Dân tộc Kinh", color: "text-ethnic-blue" },
+    { number: 85.3, suffix: "%", label: "Dân tộc Kinh (Số liệu dân số theo Kết quả toàn bộ Tổng điều tra Dân số và Nhà ở Việt Nam năm 2019)", color: "text-ethnic-blue" },
     { number: 17, suffix: "%", label: "Tỷ lệ hộ nghèo DTTS (2023)", color: "text-ethnic-green" },
     { number: 137000, suffix: " tỷ", label: "Vốn đầu tư 2021-2030", color: "text-ethnic-orange" },
   ];
@@ -488,6 +488,16 @@ const Home = () => {
                 <span className="relative flex items-center justify-center">
                   Khám phá ngay
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </Link>
+
+              <Link
+                to={ROUTES.ETHNIC_MAP}
+                className="group relative px-8 py-4 bg-blue-900/30 backdrop-blur-md border border-blue-600/50 rounded-2xl font-bold text-white text-lg hover:bg-blue-900/50 transition-all duration-300 hover:scale-105"
+              >
+                <span className="relative flex items-center justify-center">
+                  <Globe className="mr-2 h-5 w-5" />
+                  Bản đồ 54 Dân tộc
                 </span>
               </Link>
 

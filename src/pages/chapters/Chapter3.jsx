@@ -13,6 +13,7 @@ import {
 import Breadcrumb from "../../components/learning/Breadcrumb";
 import { useChapterProgress } from "../../hooks/useChapterProgress";
 import { getChapterById } from "../../data/chaptersContent";
+import { renderContentWithQuotes } from "../../utils/renderContent";
 
 const Chapter3 = () => {
   const navigate = useNavigate();
@@ -181,10 +182,27 @@ const Chapter3 = () => {
 
               {/* Quote if exists */}
               {currentSubsection.content.quote && (
-                <div className="mb-8 p-6 bg-gradient-to-r from-vietnam-red/10 to-vietnam-yellow/10 border-l-4 border-vietnam-yellow rounded-r-2xl">
-                  <p className="text-slate-200 text-lg italic leading-relaxed whitespace-pre-line">
-                    {currentSubsection.content.quote}
-                  </p>
+                <div className="mb-8">
+                  <div className="p-6 bg-gradient-to-r from-vietnam-red/10 to-vietnam-yellow/10 border-l-4 border-vietnam-yellow rounded-r-2xl">
+                    <p className="text-slate-200 text-lg italic leading-relaxed whitespace-pre-line">
+                      {currentSubsection.content.quote}
+                    </p>
+                  </div>
+
+                  {/* Images after quote if exists (2 columns) */}
+                  {currentSubsection.content.quoteImages && currentSubsection.content.quoteImages.length > 0 && (
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {currentSubsection.content.quoteImages.map((imgSrc, imgIndex) => (
+                        <div key={imgIndex} className="rounded-2xl overflow-hidden border-2 border-vietnam-yellow/40 shadow-2xl">
+                          <img
+                            src={imgSrc}
+                            alt={`Hình minh họa ${imgIndex + 1}`}
+                            className="w-full h-auto object-contain bg-slate-900/50"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -242,9 +260,9 @@ const Chapter3 = () => {
                           <h4 className="text-xl font-bold text-ethnic-purple mb-3">
                             {requirement.title}
                           </h4>
-                          <p className="text-slate-200 leading-relaxed whitespace-pre-line">
-                            {requirement.content}
-                          </p>
+                          <div className="text-slate-200 leading-relaxed">
+                            {renderContentWithQuotes(requirement.content)}
+                          </div>
                         </div>
                       </div>
                     </div>
