@@ -12,13 +12,17 @@ const Header = () => {
     { name: "Vấn đề Dân tộc", href: ROUTES.ETHNIC_CONCEPT },
     { name: "Bản đồ 54 Dân tộc", href: ROUTES.ETHNIC_MAP },
     { name: "So sánh Quan điểm", href: ROUTES.ETHNIC_DEBATE },
-    { name: "Bảo tàng", href: ROUTES.MUSEUM },
+    { name: "Bảo tàng", href: "/mln131/public/museum.html", external: true },
     { name: "Trắc nghiệm", href: ROUTES.QUIZ },
     { name: "Chatbot AI", href: ROUTES.CHATBOT },
   ];
 
-  const handleNavClick = (href) => {
-    navigate(href);
+  const handleNavClick = (href, external) => {
+    if (external) {
+      window.location.href = href;
+    } else {
+      navigate(href);
+    }
     setIsMobileMenuOpen(false);
   };
 
@@ -54,24 +58,35 @@ const Header = () => {
 
           {/* Desktop menu */}
           <div className="hidden md:flex md:items-center md:space-x-2">
-            {navigation.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.href}
-                className={({ isActive }) =>
-                  `relative px-4 py-2 text-sm font-semibold transition-all duration-300 rounded-lg group ${
-                    isActive
-                      ? "text-vietnam-yellow bg-red-950 shadow-lg ring-1 ring-vietnam-yellow/30"
-                      : "text-slate-300 hover:text-vietnam-yellow hover:bg-red-950/50"
-                  }`
-                }
-              >
-                <span className="relative z-10">{item.name}</span>
-
-                {/* Hover effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-vietnam-red/10 to-vietnam-yellow/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </NavLink>
-            ))}
+            {navigation.map((item) =>
+              item.external ? (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative px-4 py-2 text-sm font-semibold transition-all duration-300 rounded-lg group text-slate-300 hover:text-vietnam-yellow hover:bg-red-950/50"
+                >
+                  <span className="relative z-10">{item.name}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-vietnam-red/10 to-vietnam-yellow/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </a>
+              ) : (
+                <NavLink
+                  key={item.name}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `relative px-4 py-2 text-sm font-semibold transition-all duration-300 rounded-lg group ${
+                      isActive
+                        ? "text-vietnam-yellow bg-red-950 shadow-lg ring-1 ring-vietnam-yellow/30"
+                        : "text-slate-300 hover:text-vietnam-yellow hover:bg-red-950/50"
+                    }`
+                  }
+                >
+                  <span className="relative z-10">{item.name}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-vietnam-red/10 to-vietnam-yellow/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </NavLink>
+              )
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -94,19 +109,31 @@ const Header = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-red-700/50 bg-red-900/95 backdrop-blur-md">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => handleNavClick(item.href)}
-                  className={`w-full text-left block px-4 py-3 text-base font-semibold rounded-lg transition-all duration-300 ${
-                    locationMatches(item.href)
-                      ? "text-vietnam-yellow bg-gradient-to-r from-vietnam-red/20 to-vietnam-yellow/20 border border-vietnam-yellow/30"
-                      : "text-slate-300 hover:text-vietnam-yellow hover:bg-red-950/50"
-                  }`}
-                >
-                  {item.name}
-                </button>
-              ))}
+              {navigation.map((item) =>
+                item.external ? (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full text-left block px-4 py-3 text-base font-semibold rounded-lg transition-all duration-300 text-slate-300 hover:text-vietnam-yellow hover:bg-red-950/50"
+                  >
+                    {item.name}
+                  </a>
+                ) : (
+                  <button
+                    key={item.name}
+                    onClick={() => handleNavClick(item.href, item.external)}
+                    className={`w-full text-left block px-4 py-3 text-base font-semibold rounded-lg transition-all duration-300 ${
+                      locationMatches(item.href)
+                        ? "text-vietnam-yellow bg-gradient-to-r from-vietnam-red/20 to-vietnam-yellow/20 border border-vietnam-yellow/30"
+                        : "text-slate-300 hover:text-vietnam-yellow hover:bg-red-950/50"
+                    }`}
+                  >
+                    {item.name}
+                  </button>
+                )
+              )}
 
               {/* Mobile Info Section */}
               <div className="mt-4 pt-4 border-t border-slate-700/50">

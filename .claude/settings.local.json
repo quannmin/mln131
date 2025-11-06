@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(node /tmp/generate_ethnic_groups.js:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(python3:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

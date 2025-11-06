@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import EthnicDebate from './pages/EthnicDebate';
 import EthnicMap from './pages/EthnicMap';
-import Museum from './pages/Museum';
 import Quiz from './pages/Quiz';
 import Chatbot from './pages/Chatbot';
 import Home from './pages/Home';
@@ -29,7 +28,6 @@ function App() {
           <Route path={ROUTES.COMPLETION} element={<CompletionScreen />} />
           <Route path={ROUTES.ETHNIC_DEBATE} element={<EthnicDebate />} />
           <Route path={ROUTES.ETHNIC_MAP} element={<EthnicMap />} />
-          <Route path={ROUTES.MUSEUM} element={<Museum />} />
           <Route path={ROUTES.QUIZ} element={<Quiz />} />
           <Route path={ROUTES.CHATBOT} element={<Chatbot />} />
           <Route path="*" element={<NotFound />} />

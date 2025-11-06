@@ -11,7 +11,6 @@ export const ROUTES = {
   COMPLETION: "/van-de-dan-toc/hoan-thanh",
   ETHNIC_DEBATE: "/chiem-dung-hay-chenh-lech",
   ETHNIC_MAP: "/ban-do-dan-toc",
-  MUSEUM: "/bao-tang",
   QUIZ: "/trac-nghiem",
   CHATBOT: "/chatbot-ai",
 };

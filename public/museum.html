@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Phòng Triển Lãm 3D Mở Rộng</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bảo Tàng Dân Tộc 3D - 54 Dân Tộc Việt Nam</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.min.js"></script>
     <style>
@@ -13,150 +12,285 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             overflow: hidden;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
         }
-
-        /* Màn hình chặn khi chưa bắt đầu */
         #blocker {
             position: absolute;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.7);
-            /* Thêm hiệu ứng mờ cho nền dưới blocker */
             backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 100;
         }
-
         #instructions {
-            background: rgba(255, 255, 255, 0.1);
-            /* Nền trắng trong suốt */
-            padding: 30px;
+            background: rgba(20, 20, 30, 0.95);
+            padding: 40px;
             text-align: center;
             color: #fff;
-            border-radius: 10px;
-            max-width: 80%;
+            border-radius: 15px;
+            border: 2px solid #FFD700;
+            max-width: 600px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
         }
-
         #instructions h2 {
             margin-bottom: 20px;
-            color: #fff;
-            font-size: 2em;
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            color: #FFD700;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
-
         #instructions p {
             font-size: 1.1em;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             line-height: 1.6;
+            color: #ddd;
         }
-
         .controls-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            margin: 25px 0;
             text-align: left;
         }
-
         .controls-grid div {
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 3px solid #FFD700;
             border-radius: 5px;
         }
-
         .controls-grid strong {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: #FFD700;
         }
-
-        #start-button {
-            padding: 10px 30px;
-            font-size: 1.2em;
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
             cursor: pointer;
-            background-color: #007bff;
-            color: white;
             border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            border-radius: 8px;
+            transition: all 0.3s;
+            min-width: 160px;
         }
-
+        #start-button {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
         #start-button:hover {
-            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
         }
-
-        /* Thanh thông tin dưới cùng */
+        #back-button {
+            background: linear-gradient(135deg, #FF6B6B, #FF4757);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        #back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
         #status-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 10px;
+            padding: 15px 20px;
             font-size: 0.9em;
-            text-align: left;
             z-index: 50;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-top: 2px solid #FFD700;
         }
-
-        /* Panel thông tin tranh */
+        #room-indicator {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #FFD700;
+            min-width: 100px;
+        }
+        #navigation-hint {
+            flex: 1;
+            color: #aaa;
+            font-size: 0.9em;
+        }
+        #room-dots {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .room-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .room-dot:hover {
+            transform: scale(1.3);
+        }
+        .room-dot.active {
+            background: #FFD700 !important;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            border-color: #FFD700;
+        }
         #info-panel {
             position: absolute;
-            top: 50px;
-            left: 40px;
-            width: 360px;
-            max-width: 90vw;
+            top: 20px;
+            left: 20px;
+            width: 320px;
             max-height: 80vh;
-            background: rgba(30, 30, 30, 0.95);
+            background: rgba(15, 15, 25, 0.98);
             color: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #FFD700;
             display: none;
             flex-direction: column;
-            z-index: 10;
-            overflow-y: auto;
+            z-index: 20;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
         }
-
         #info-panel h3 {
             margin-top: 0;
-            font-size: 1.5em;
-            border-bottom: 2px solid #fff;
+            font-size: 1.3em;
+            color: #FFD700;
+            border-bottom: 2px solid #FFD700;
             padding-bottom: 10px;
-            margin-bottom: 15px;
-            color: #fff;
+            margin-bottom: 12px;
+            flex-shrink: 0;
         }
-
         #info-panel p {
-            line-height: 1.6;
+            line-height: 1.4;
             margin-bottom: 10px;
             text-align: justify;
+            font-size: 0.85em;
+            color: #ddd;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
         }
-
+        #info-panel p::-webkit-scrollbar {
+            width: 6px;
+        }
+        #info-panel p::-webkit-scrollbar-track {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 3px;
+        }
+        #info-panel p::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.5);
+            border-radius: 3px;
+        }
+        #info-panel p::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.8);
+        }
+        #scroll-hint {
+            text-align: center;
+            font-size: 0.75em;
+            color: rgba(255, 215, 0, 0.6);
+            margin-top: 8px;
+            animation: blink 1.5s infinite;
+            display: none;
+        }
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0.5; }
+        }
         #close-info-button {
-            margin-top: 20px;
+            margin-top: 12px;
             padding: 10px;
-            background-color: #dc3545;
+            background: linear-gradient(135deg, #FF6B6B, #FF4757);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            width: 100%;
+            font-size: 0.9em;
         }
-
         #close-info-button:hover {
-            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
         }
-
-        /* Crosshair */
+        #sidebar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 280px;
+            max-height: 75vh;
+            background: rgba(15, 15, 25, 0.98);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #FFD700;
+            overflow-y: auto;
+            z-index: 20;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+        }
+        #sidebar h3 {
+            margin: 0 0 10px 0;
+            color: #FFD700;
+            font-size: 1.1em;
+            border-bottom: 2px solid #FFD700;
+            padding-bottom: 10px;
+        }
+        #ethnic-list {
+            font-size: 0.85em;
+            line-height: 1.8;
+        }
+        .ethnic-item {
+            padding: 6px 8px;
+            margin: 3px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ethnic-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        #toggle-sidebar-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #FFD700;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            z-index: 30;
+            transition: all 0.3s;
+        }
+        #toggle-sidebar-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
         #crosshair {
             position: absolute;
             top: 50%;
@@ -166,31 +300,31 @@
             margin-top: -10px;
             margin-left: -10px;
             pointer-events: none;
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255, 215, 0, 0.6);
             border-radius: 50%;
             z-index: 9;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
         }
     </style>
 </head>
-
 <body>
     <div id="blocker">
         <div id="instructions">
-            <h2>BẢO TÀNG LỊCH SỬ 3D</h2>
-            <p>Sử dụng chuột để khóa con trỏ và bắt đầu khám phá.</p>
+            <h2>🏛️ BẢO TÀNG DÂN TỘC 3D</h2>
+            <p>Khám phá nền văn hóa phong phú của 54 dân tộc Việt Nam</p>
             <div class="controls-grid">
                 <div>
-                    <strong>Di chuyển:</strong>
-                    W / ↑ (Tiến), S / ↓ (Lùi), A / ← (Trái), D / → (Phải)
+                    <strong>⌨️ Di chuyển:</strong>
+                    W/↑ Tiến | S/↓ Lùi<br>A/← Trái | D/→ Phải
                 </div>
                 <div>
-                    <strong>Tương tác:</strong>
-                    Click chuột trái (Xem/Nghe Tranh), E (Đóng thông tin)
+                    <strong>🖱️ Tương tác:</strong>
+                    Click xem thông tin<br>E đóng | L danh sách | F thoát
                 </div>
             </div>
-            <div style="display: flex; gap: 16px; justify-content: center; margin-top: 30px;">
-                <button id="start-button" style="padding: 10px 30px; font-size: 1.2em; min-width: 160px; height: 48px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 5px; transition: background-color 0.3s; font-family: inherit; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">Bắt đầu</button>
-                <button id="back-button" style="padding: 10px 30px; font-size: 1.2em; min-width: 160px; height: 48px; cursor: pointer; background-color: #ff9800; color: white; border: none; border-radius: 5px; transition: background-color 0.3s; font-family: inherit; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">Quay lại</button>
+            <div class="button-group">
+                <button id="start-button">🎮 Bắt Đầu</button>
+                <button id="back-button">🏠 Quay Lại</button>
             </div>
         </div>
     </div>
@@ -198,29 +332,61 @@
     <div id="crosshair"></div>
 
     <div id="status-bar">
-        <span id="room-indicator">Phòng: 1</span>
-        <span>Phóng to tranh: Click chuột trái</span>
+        <span id="room-indicator">Phòng: 1/3</span>
+        <span id="navigation-hint">W/A/S/D di chuyển • Click xem • E đóng • L danh sách • F thoát</span>
+        <div id="room-dots">
+            <span class="room-dot active" data-room="1" style="background: #FFD700;"></span>
+            <span class="room-dot" data-room="2" style="background: #888;"></span>
+            <span class="room-dot" data-room="3" style="background: #888;"></span>
+        </div>
     </div>
 
     <div id="info-panel">
-        <h3 id="art-title">Tiêu đề Tranh</h3>
-        <p id="art-description">Mô tả chi tiết về bức tranh.</p>
-            <button id="close-info-button">Đóng (Phím E)</button>
+        <h3 id="art-title">Tên dân tộc</h3>
+        <p id="art-description">Thông tin chi tiết về dân tộc...</p>
+        <div id="scroll-hint">⬇️ Cuộn để xem thêm (↑↓ hoặc chuột)</div>
+        <button id="close-info-button">✕ Đóng (E)</button>
     </div>
 
-    <script>
-        // ==== CẤU HÌNH KÍCH THƯỚC PHÒNG / CỬA ====
-        const roomW = 16, roomH = 6, roomD = 12; // chiều rộng, cao, sâu phòng
-        const doorWidth = 3, doorHeight = 3;      // kích thước cửa
-        const doorCenterX = roomW / 2;            // vị trí cửa theo trục X (giữa 2 phòng) = 8
-        const room1MinX = -roomW / 2 + 0.5;        // -7.5
-        const room1MaxX = doorCenterX - 0.5;       // 7.5
-        const room2MinX = doorCenterX + 0.5;       // 8.5
-        const room2MaxX = room2MinX + roomW - 1;   // 23.5
-        const minZ = -roomD / 2 + 0.5;             // -5.5
-        const maxZ = roomD / 2 - 0.5;              // 5.5
+    <div id="sidebar">
+        <h3>📋 54 Dân Tộc</h3>
+        <div id="ethnic-list"></div>
+    </div>
 
-        // ==== BIẾN TOÀN CỤC ====
+    <button id="toggle-sidebar-btn">📋</button>
+
+    <script>
+        // ===== CẤU HÌNH 3 PHÒNG =====
+        const ROOM_WIDTH = 20;
+        const ROOM_HEIGHT = 8;
+        const ROOM_DEPTH = 16;
+        const DOOR_WIDTH = 3;        // Width of door opening
+        const DOOR_HEIGHT = 3.5;     // Height of door opening
+        const DOOR_BOTTOM_Y = 1.0;   // Door starts at this height
+
+        // Optimized spacing: 18 units between room centers (better proportions)
+        const ROOM_CENTERS = [0, 18, 36];
+
+        // Door positions: centered between rooms
+        const DOOR_CENTER_X1 = 9;    // Between Room 1 (0) and Room 2 (18)
+        const DOOR_CENTER_X2 = 27;   // Between Room 2 (18) and Room 3 (36)
+
+        // Room bounds (excluding door areas)
+        const ROOM_BOUNDS = [
+            { minX: -10.5, maxX: 7.5 },   // Room 1: left side only
+            { minX: 10.5, maxX: 25.5 },   // Room 2: middle (door gaps at 9 and 27)
+            { minX: 28.5, maxX: 46.5 }    // Room 3: right side only
+        ];
+
+        // Door passage areas (allow free movement through doors)
+        const DOOR_ZONES = [
+            { x: DOOR_CENTER_X1, minZ: -1.5, maxZ: 1.5 },  // Door 1 zone
+            { x: DOOR_CENTER_X2, minZ: -1.5, maxZ: 1.5 }   // Door 2 zone
+        ];
+
+        const Z_BOUNDS = { min: -8, max: 8 };
+
+        // ===== BIẾN TOÀN CỤC =====
         let scene, camera, renderer, controls, raycaster;
         let moveState = { forward: false, backward: false, left: false, right: false };
         const clock = new THREE.Clock();
@@ -229,238 +395,240 @@
         let currentRoom = 1;
         let activeArtMesh = null;
         let isControlsLocked = false;
+        let ethnicData = [];
+        let skyTexture = null;  // Global variable for sky texture
 
         init();
         animate();
 
-        // ==== KHỞI TẠO SCENE ====
-        function init() {
+        async function init() {
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xAAAAAA); // Nền xám nhạt hơn
+            scene.background = new THREE.Color(0x1a1a1a);
+            scene.fog = new THREE.Fog(0x1a1a1a, 80, 100);
 
-            // Camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-            // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFShadowShadowMap;
             document.body.appendChild(renderer.domElement);
 
-            // Ánh sáng Môi trường (nhẹ)
-            // TĂNG CƯỜNG ĐỘ ÁNH SÁNG MÔI TRƯỜNG LÊN 1.2
-            scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1.2));
+            // Ambient lighting - increased brightness
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambientLight);
 
-            // Ánh sáng Tổng thể (Directional Light) - SÁNG HƠN
-            // TĂNG CƯỜNG ĐỘ ÁNH SÁNG ĐỊNH HƯỚNG LÊN 0.8
-            //const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            //dirLight.position.set(5, 10, 7.5);
-            //scene.add(dirLight);
-            //dirLight.position.set(5, 10, 7.5);
-            //scene.add(dirLight);
-
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            dirLight.position.set(5, 10, 7.5);
+            // Directional light with shadow - increased brightness
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            dirLight.position.set(30, 20, 30);
+            dirLight.castShadow = true;
+            dirLight.shadow.camera.far = 100;
+            dirLight.shadow.camera.left = -60;
+            dirLight.shadow.camera.right = 60;
+            dirLight.shadow.camera.top = 40;
+            dirLight.shadow.camera.bottom = -40;
             scene.add(dirLight);
 
-            // **THIẾT KẾ VẬT LIỆU MỚI CHO BẢO TÀNG**
-
-            // 1. Tải Texture Tường (Texture Xi Măng Đánh Bóng)
-            // SỬ DỤNG FILE museum_wall_texture.jpg (giả định đã nằm cùng thư mục)
-            const wallTex = new THREE.TextureLoader().load("Texturelabs_Brick_141S.jpg");
-            wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
-            wallTex.repeat.set(1, 1); // Lặp lại 4 lần ngang (X) và 2 lần dọc (Y/H)
-            wallTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-            wallTex.minFilter = THREE.LinearFilter;
-
-            // Mã màu: Vàng nhạt, ấm (Warm Pale Yellow), gợi nhớ màu tường nhà cổ: 0xFBE7C6
-            //const lightYellowColor = 0xFBE7C6; 
-            // Mã màu: Vàng nhạt tối hơn một chút cho tường cửa: 0xE0D0B0
-            //const darkerYellowColor = 0xE0D0B0; 
-
-            // Vật liệu Tường (Áp dụng Texture)
-            //const museumWallMat = new THREE.MeshLambertMaterial({ map: wallTex, color: 0xFFFFFF });
-            // Vật liệu Trần (Màu trắng sáng hơn)
-            //const ceilingMat = new THREE.MeshBasicMaterial({ color: 0xCFCFCF });
-            // Vật liệu Tường trước/sau cửa (Tối hơn - Dùng texture nhưng tối màu hơn)
-            //const darkerWallMat = new THREE.MeshLambertMaterial({ map: wallTex, color: 0xAAAAAA });
-
-
-            // **THIẾT KẾ VẬT LIỆU MỚI CHO BẢO TÀNG**
-            const museumWallMat = new THREE.MeshLambertMaterial({ map: wallTex });
-            const darkerWallMat = new THREE.MeshLambertMaterial({ map: wallTex, color: 0xAAAAAA }); 
-            // Mã màu: Vàng nhạt, ấm (Warm Pale Yellow), gợi nhớ màu tường nhà cổ: 0xFBE7C6
-            const lightYellowColor = 0xCDB38B;
-            // Mã màu: Vàng nhạt tối hơn một chút cho tường cửa: 0xE0D0B0
-            const darkerYellowColor = 0xCDB38B;
-
-            // Vật liệu Tường Chính (CHỈ DÙNG MÀU ĐƠN SẮC VÀNG NHẠT)
-            //const museumWallMat = new THREE.MeshLambertMaterial({ color: lightYellowColor });
-
-            // Vật liệu Trần (Màu trắng NHẠT do bạn yêu cầu: 0xCFCFCF)
-            //const ceilingMat = new THREE.MeshBasicMaterial({ color: 0xCFCFCF });
-
-            // Vật liệu Tường trước/sau cửa (Màu Vàng Nhạt Tối Hơn)
-            //const darkerWallMat = new THREE.MeshLambertMaterial({ color: darkerYellowColor });
-
-
-            // ==== TƯỜNG PHÒNG 1 (DÙNG VẬT LIỆU MỚI) ====
-            const backWall = new THREE.Mesh(new THREE.PlaneGeometry(roomW, roomH), museumWallMat);
-            backWall.position.set(0, roomH / 2, -roomD / 2);
-            scene.add(backWall);
-
-            const frontWall = new THREE.Mesh(new THREE.PlaneGeometry(roomW, roomH), darkerWallMat);
-            frontWall.position.set(0, roomH / 2, roomD / 2);
-            frontWall.rotation.y = Math.PI;
-            scene.add(frontWall);
-
-            const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(roomD, roomH), museumWallMat);
-            leftWall.position.set(-roomW / 2, roomH / 2, 0);
-            leftWall.rotation.y = Math.PI / 2;
-            scene.add(leftWall);
-
-            // ==== TƯỜNG GIỮA CÓ CỬA ====
-            createWallWithDoor(doorCenterX, 0, 0, -Math.PI / 2, roomD, roomH, doorWidth, doorHeight, museumWallMat);
-
-            // ==== SÀN & TRẦN PHÒNG 1 ====
-            // SÀN (Vân đá/gỗ tối màu)
-            const floorTex = new THREE.TextureLoader().load("TSG_CG_0006_DARK_SHINY_3_DIFFUSE.jpg");
-            floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
-            floorTex.repeat.set(6, 6); // Tăng lặp lại texture cho cảm giác tinh xảo hơn
-            floorTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-            floorTex.minFilter = THREE.LinearFilter;
-            // Màu nâu sẫm cho sàn
-            const floorMat = new THREE.MeshStandardMaterial({ map: floorTex, color: 0x4B371C, side: THREE.DoubleSide });
-
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(roomW, roomD), floorMat);
-            floor.rotation.x = -Math.PI / 2;
-            scene.add(floor);
-
-            //const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(roomW, roomD), ceilingMat);
-            //ceiling.position.y = roomH;
-            //ceiling.rotation.x = Math.PI / 2;
-            //scene.add(ceiling);
-
-            // Hàm tạo trần bầu trời cho 1 phòng (CẬP NHẬT: TỐI ƯU HÓA)
-            function addCeilingSky(centerX, centerZ) {
-                const skyTex = new THREE.TextureLoader().load("sku.jpg");
-                skyTex.wrapS = skyTex.wrapT = THREE.RepeatWrapping;
-                skyTex.repeat.set(1, 1);
-                skyTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-                skyTex.minFilter = THREE.LinearFilter;
-
-                const ceilingSkyMat = new THREE.MeshStandardMaterial({ 
-                    map: skyTex, 
-                    side: THREE.DoubleSide 
-                });
-
-                const ceilingSky = new THREE.Mesh(
-                    new THREE.PlaneGeometry(roomW, roomD),
-                    ceilingSkyMat
-                );
-                ceilingSky.rotation.x = Math.PI / 2;
-                ceilingSky.position.set(centerX, roomH, centerZ); 
-                scene.add(ceilingSky);
-    
-                return ceilingSky; // Trả về đối tượng để quản lý nếu cần
+            // Load ethnic data
+            try {
+                const response = await fetch('/mln131/src/data/ethnicMuseum.json');
+                ethnicData = await response.json();
+                console.log(`✓ Loaded ${ethnicData.length} ethnic groups`);
+            } catch (e) {
+                console.error('Error loading data:', e);
+                ethnicData = [];
             }
 
-            // Thêm trần cho phòng 1 (ở gốc toạ độ)
-            addCeilingSky(0, 0);
+            // Load textures
+            const textureLoader = new THREE.TextureLoader();
+            let wallTexture = null;
 
-            // Thêm trần cho phòng 2 (nếu nó nằm bên phải phòng 1)
-            addCeilingSky(roomW, 0);
+            try {
+                wallTexture = await new Promise((resolve, reject) => {
+                    textureLoader.load(
+                        '/mln131/TSG_CG_0006_DARK_SHINY_3_DIFFUSE.jpg',
+                        (texture) => {
+                            texture.wrapS = THREE.RepeatWrapping;
+                            texture.wrapT = THREE.RepeatWrapping;
+                            texture.repeat.set(4, 4);
+                            resolve(texture);
+                        },
+                        undefined,
+                        reject
+                    );
+                });
+                console.log('✓ Wall texture loaded');
+            } catch (e) {
+                console.warn('Could not load wall texture:', e);
+            }
 
-// Nếu phòng 2 nằm phía sau phòng 1 thì dùng:
-// addCeilingSky(0, roomD);
-            
-            // ==== PHÒNG 2 (DÙNG VẬT LIỆU MỚI) ====
-            createSecondRoom(roomW, roomH, roomD, museumWallMat, floorMat, null, darkerWallMat);
+            // Load sky texture for ceiling
+            try {
+                skyTexture = await new Promise((resolve, reject) => {
+                    textureLoader.load(
+                        '/mln131/sku.jpg',
+                        (texture) => {
+                            texture.wrapS = THREE.ClampToEdgeWrapping;
+                            texture.wrapT = THREE.ClampToEdgeWrapping;
+                            resolve(texture);
+                        },
+                        undefined,
+                        reject
+                    );
+                });
+                console.log('✓ Sky texture loaded');
+            } catch (e) {
+                console.warn('Could not load sky texture:', e);
+            }
 
-            // ==== CONTROLS VÀ SỰ KIỆN (GIỮ NGUYÊN) ====
+            // Background color - brighter
+            scene.background = new THREE.Color(0x555555);
+
+            // Create SINGLE shared materials
+            const wallMat = new THREE.MeshStandardMaterial({
+                map: wallTexture,
+                roughness: 0.6,
+                metalness: 0.3,
+                side: THREE.DoubleSide
+            });
+
+            const floorMat = new THREE.MeshStandardMaterial({
+                map: wallTexture,
+                roughness: 0.7,
+                metalness: 0.2,
+                side: THREE.DoubleSide
+            });
+
+            // Create 3 rooms using SAME materials
+            // Room 1: solid left wall (right wall is shared door)
+            createRoom(ROOM_CENTERS[0], wallMat, floorMat, 'left');
+
+            // Room 2: no side walls (both left and right are shared doors)
+            createRoom(ROOM_CENTERS[1], wallMat, floorMat, null);
+
+            // Room 3: solid right wall (left wall is shared door)
+            createRoom(ROOM_CENTERS[2], wallMat, floorMat, 'right');
+
+            // Create SHARED door walls between rooms
+            createWallWithDoor(DOOR_CENTER_X1, 0, 0, -Math.PI / 2, ROOM_DEPTH, ROOM_HEIGHT, DOOR_WIDTH, DOOR_HEIGHT, wallMat);
+            createWallWithDoor(DOOR_CENTER_X2, 0, 0, -Math.PI / 2, ROOM_DEPTH, ROOM_HEIGHT, DOOR_WIDTH, DOOR_HEIGHT, wallMat);
+
+            // Setup controls
             controls = new THREE.PointerLockControls(camera, renderer.domElement);
             scene.add(controls.getObject());
-            controls.getObject().position.set(0, 1.6, 5);
-            // ... (các sự kiện lock, unlock, keydown, keyup, click, resize, E key giữ nguyên) ...
+            controls.getObject().position.set(0, 1.6, 0);
 
-            // Bắt sự kiện bắt đầu
             document.getElementById("start-button").addEventListener("click", () => controls.lock());
-            // Sự kiện nút Quay lại
             document.getElementById("back-button").addEventListener("click", () => {
-                window.location.href = "/";
+                window.location.href = "/mln131/";
             });
-            // Cập nhật trạng thái khóa
+
             controls.addEventListener("lock", () => {
                 document.getElementById("blocker").style.display = "none";
                 isControlsLocked = true;
             });
             controls.addEventListener("unlock", () => {
                 document.getElementById("blocker").style.display = "flex";
-                document.getElementById("info-panel").style.display = "none";
                 isControlsLocked = false;
             });
 
-            // Di chuyển
             document.addEventListener("keydown", onKeyDown);
             document.addEventListener("keyup", onKeyUp);
-            document.getElementById("close-info-button").addEventListener("click", () => {
-                document.getElementById("info-panel").style.display = "none";
-                if (activeArtMesh) {
-                    const activeArt = artworks.find(a => a.mesh === activeArtMesh);
-                    if (activeArt && activeArt.type === "video" && activeArt.videoEl) {
-                        activeArt.videoEl.pause();
-                        activeArt.videoEl.muted = true;
-                    }
-                }
-                activeArtMesh = null;
+
+            // Room navigation dots
+            document.querySelectorAll(".room-dot").forEach(dot => {
+                dot.addEventListener("click", (e) => {
+                    const roomNum = parseInt(e.target.dataset.room);
+                    teleportToRoom(roomNum);
+                });
             });
 
-            // Raycaster để chọn tranh
+            // Sidebar & info panel
+            document.getElementById("toggle-sidebar-btn").addEventListener("click", toggleSidebar);
+            document.getElementById("close-info-button").addEventListener("click", closeInfoPanel);
+
+            // Add scroll support for info-panel
+            const infoPanelDescription = document.getElementById("art-description");
+
+            // Mouse wheel scroll
+            infoPanelDescription.addEventListener("wheel", (e) => {
+                e.preventDefault();
+                infoPanelDescription.scrollTop += e.deltaY;
+            }, { passive: false });
+
+            // Touch scroll support (for mobile)
+            let touchStartY = 0;
+            infoPanelDescription.addEventListener("touchstart", (e) => {
+                touchStartY = e.touches[0].clientY;
+            });
+            infoPanelDescription.addEventListener("touchmove", (e) => {
+                const touchEndY = e.touches[0].clientY;
+                const diff = touchStartY - touchEndY;
+                infoPanelDescription.scrollTop += diff;
+                touchStartY = touchEndY;
+            });
+
+            // Keyboard scroll (arrow up/down when info-panel is visible)
+            document.addEventListener("keydown", (e) => {
+                const infoPanelVisible = document.getElementById("info-panel").style.display === "flex";
+                if (infoPanelVisible) {
+                    if (e.code === "ArrowDown") {
+                        e.preventDefault();
+                        infoPanelDescription.scrollTop += 30;
+                    } else if (e.code === "ArrowUp") {
+                        e.preventDefault();
+                        infoPanelDescription.scrollTop -= 30;
+                    }
+                }
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (e.code === "KeyL" && isControlsLocked) {
+                    e.preventDefault();
+                    toggleSidebar();
+                }
+                if (e.code === "KeyE") {
+                    e.preventDefault();
+                    closeInfoPanel();
+                }
+                if (e.code === "KeyF") {
+                    e.preventDefault();
+                    window.location.href = "/mln131/";
+                }
+            });
+
             raycaster = new THREE.Raycaster();
             document.addEventListener("click", (event) => {
-                if (isControlsLocked) {
-                    onClick(event);
-                }
+                if (isControlsLocked) onClick(event);
             });
 
-            // Thêm tranh phòng 1 (ÁNH SÁNG SPOTLIGHT ĐƯỢC THÊM TRONG HÀM addArtPiece)
-            addSampleArtPieces();
-
-            // Resize màn hình
+            populateEthnicList();
+            addAllArtworks();
             window.addEventListener("resize", onWindowResize);
-
-            // Đóng panel bằng phím E
-            document.addEventListener("keydown", (e) => {
-                if (e.code === "KeyE") {
-                    document.getElementById("info-panel").style.display = "none";
-                    if (activeArtMesh) {
-                        const activeArt = artworks.find(a => a.mesh === activeArtMesh);
-                        if (activeArt && activeArt.type === "video" && activeArt.videoEl) {
-                            activeArt.videoEl.pause();
-                            activeArt.videoEl.muted = true;
-                        }
-                    }
-                    activeArtMesh = null;
-                }
-            });
         }
 
-        // ==== TẠO TƯỜNG CÓ CỬA (CẬP NHẬT ĐỂ NHẬN VẬT LIỆU TƯỜNG) ====
+        // ===== TẠO TƯỜNG CÓ CỬA =====
         function createWallWithDoor(x, y, z, rotationY, width, height, dWidth, dHeight, wallMat, thickness = 0.5) {
             const group = new THREE.Group();
 
             // Bên trái cửa
             const left = new THREE.Mesh(new THREE.BoxGeometry((width - dWidth) / 2, height, thickness), wallMat);
             left.position.set(-(dWidth / 2 + (width - dWidth) / 4), height / 2, 0);
+            left.castShadow = true;
+            left.receiveShadow = true;
             group.add(left);
 
             // Bên phải cửa
             const right = new THREE.Mesh(new THREE.BoxGeometry((width - dWidth) / 2, height, thickness), wallMat);
             right.position.set(dWidth / 2 + (width - dWidth) / 4, height / 2, 0);
+            right.castShadow = true;
+            right.receiveShadow = true;
             group.add(right);
 
             // Phần trên cửa
             const top = new THREE.Mesh(new THREE.BoxGeometry(dWidth, height - dHeight, thickness), wallMat);
             top.position.set(0, dHeight + (height - dHeight) / 2, 0);
+            top.castShadow = true;
+            top.receiveShadow = true;
             group.add(top);
 
             group.position.set(x, y, z);
@@ -468,394 +636,387 @@
             scene.add(group);
         }
 
-        // ==== TẠO PHÒNG 2 (CẬP NHẬT ĐỂ NHẬN VẬT LIỆU TƯỜNG) ====
-        function createSecondRoom(roomW, roomH, roomD, wallMat, floorMat, ceilingMat, darkerWallMat) {
-            const room2Group = new THREE.Group();
-            const room2OffsetX = roomW; // dịch sang phải (16)
+        function createRoom(centerX, wallMat, floorMat, sideWall = 'right') {
+            // Floor
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_WIDTH, ROOM_DEPTH), floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.x = centerX;
+            floor.castShadow = true;
+            floor.receiveShadow = true;
+            scene.add(floor);
 
-            // Tường sau
-            const backWall2 = new THREE.Mesh(new THREE.PlaneGeometry(roomW, roomH), wallMat);
-            backWall2.position.set(room2OffsetX, roomH / 2, -roomD / 2);
-            room2Group.add(backWall2);
+            // Back wall (full)
+            const backWall = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_WIDTH, ROOM_HEIGHT), wallMat);
+            backWall.position.set(centerX, ROOM_HEIGHT/2, -ROOM_DEPTH/2);
+            backWall.castShadow = true;
+            backWall.receiveShadow = true;
+            scene.add(backWall);
 
-            // Tường trước
-            const frontWall2 = new THREE.Mesh(new THREE.PlaneGeometry(roomW, roomH), darkerWallMat);
-            frontWall2.position.set(room2OffsetX, roomH / 2, roomD / 2);
-            frontWall2.rotation.y = Math.PI;
-            room2Group.add(frontWall2);
+            // Front wall (full)
+            const frontWall = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_WIDTH, ROOM_HEIGHT), wallMat);
+            frontWall.position.set(centerX, ROOM_HEIGHT/2, ROOM_DEPTH/2);
+            frontWall.castShadow = true;
+            frontWall.receiveShadow = true;
+            scene.add(frontWall);
 
-            // Tường phải
-            const rightWall2 = new THREE.Mesh(new THREE.PlaneGeometry(roomD, roomH), wallMat);
-            rightWall2.position.set(room2OffsetX + roomW / 2, roomH / 2, 0);
-            rightWall2.rotation.y = -Math.PI / 2;
-            room2Group.add(rightWall2);
-
-            // Sàn
-            const floor2 = new THREE.Mesh(new THREE.PlaneGeometry(roomW, roomD), floorMat);
-            floor2.position.set(room2OffsetX, 0, 0);
-            floor2.rotation.x = -Math.PI / 2;
-            room2Group.add(floor2);
-
-            // Trần
-            //const ceiling2 = new THREE.Mesh(new THREE.PlaneGeometry(roomW, roomD), ceilingMat);
-            //ceiling2.position.set(room2OffsetX, roomH, 0);
-            //ceiling2.rotation.x = Math.PI / 2;
-            //room2Group.add(ceiling2);
-
-            scene.add(room2Group);
-
-            // Tranh phòng 2
-            addArtPiecesForSecondRoom(room2OffsetX);
-        }
-
-        // ==== THÊM TRANH (CẬP NHẬT: THÊM SPOTLIGHT) ====
-        function addArtPiece(x, y, z, rotationY, width, height, title, mediaUrl, description, type = "image") {
-            const group = new THREE.Group();
-
-            const frameDepth = 0.1;
-            const frameGeometry = new THREE.BoxGeometry(width + 0.2, height + 0.2, frameDepth);
-            // Vật liệu khung tranh tối màu, trang trọng
-            const frameMaterial = new THREE.MeshLambertMaterial({ color: 0x4A2C1C });
-            const frame = new THREE.Mesh(frameGeometry, frameMaterial);
-
-            let displayMesh;
-            let videoEl = null;
-
-            if (type === "image") {
-                // Ảnh
-                const tex = new THREE.TextureLoader().load(mediaUrl);
-                tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-                const picGeometry = new THREE.PlaneGeometry(width, height);
-                const picMaterial = new THREE.MeshLambertMaterial({ map: tex });
-                displayMesh = new THREE.Mesh(picGeometry, picMaterial);
-            } else if (type === "video") {
-                // Video
-                const video = document.createElement("video");
-                video.src = mediaUrl;
-                video.loop = true;
-                video.muted = true;
-                video.playsInline = true;
-                video.preload = "auto";
-
-                const videoTex = new THREE.VideoTexture(video);
-                videoTex.minFilter = THREE.LinearFilter;
-                videoTex.magFilter = THREE.LinearFilter;
-
-                const vidGeometry = new THREE.PlaneGeometry(width, height);
-                const vidMaterial = new THREE.MeshBasicMaterial({ map: videoTex });
-                displayMesh = new THREE.Mesh(vidGeometry, vidMaterial);
-
-                videoEl = video;
-                group.userData.videoEl = video;
+            // Side wall (left or right - whichever is not shared with a door)
+            if (sideWall === 'left') {
+                const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_DEPTH, ROOM_HEIGHT), wallMat);
+                leftWall.rotation.y = Math.PI / 2;
+                leftWall.position.set(centerX - ROOM_WIDTH/2, ROOM_HEIGHT/2, 0);
+                leftWall.castShadow = true;
+                leftWall.receiveShadow = true;
+                scene.add(leftWall);
+            } else if (sideWall === 'right') {
+                const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_DEPTH, ROOM_HEIGHT), wallMat);
+                rightWall.rotation.y = -Math.PI / 2;
+                rightWall.position.set(centerX + ROOM_WIDTH/2, ROOM_HEIGHT/2, 0);
+                rightWall.castShadow = true;
+                rightWall.receiveShadow = true;
+                scene.add(rightWall);
             }
 
-            displayMesh.position.z = frameDepth / 2 + 0.001;
+            // Ceiling with sky texture
+            const ceilingMat = skyTexture
+                ? new THREE.MeshStandardMaterial({
+                    map: skyTexture,
+                    roughness: 0.7,
+                    metalness: 0.2
+                })
+                : new THREE.MeshStandardMaterial({
+                    color: 0x1a1a1a,
+                    roughness: 0.9,
+                    metalness: 0
+                });
+            const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_WIDTH, ROOM_DEPTH), ceilingMat);
+            ceiling.rotation.x = Math.PI / 2;
+            ceiling.position.set(centerX, ROOM_HEIGHT, 0);
+            ceiling.castShadow = true;
+            ceiling.receiveShadow = true;
+            scene.add(ceiling);
+        }
+
+        function addAllArtworks() {
+            if (!ethnicData || ethnicData.length === 0) return;
+
+            ethnicData.forEach(ethnic => {
+                const ethnicId = ethnic.id; // 1-54
+
+                // Determine room (18 per room)
+                let roomNum, indexInRoom;
+                if (ethnicId <= 18) {
+                    roomNum = 1;
+                    indexInRoom = ethnicId - 1;
+                } else if (ethnicId <= 36) {
+                    roomNum = 2;
+                    indexInRoom = ethnicId - 19;
+                } else {
+                    roomNum = 3;
+                    indexInRoom = ethnicId - 37;
+                }
+
+                const centerX = ROOM_CENTERS[roomNum - 1];
+
+                // Arrange paintings per room based on available walls
+                // Room 1: Back (6) + Front (6) + Left (6) = 18
+                // Room 2: Back (9) + Front (9) = 18 (smaller size to avoid crowding)
+                // Room 3: Back (6) + Front (6) + Right (6) = 18
+                let x, z, rotY, yPos;
+                // Adjust painting sizes per room
+                const artW = roomNum === 2 ? 1.5 : 1.6;
+                const artH = roomNum === 2 ? 1.2 : 1.3;
+
+                // Default Y position (center height)
+                yPos = ROOM_HEIGHT / 2;  // = 4
+
+                // Back wall: indices 0-5 (6 paintings) OR 0-8 (9 paintings for Room 2)
+                if (indexInRoom < 6 || (indexInRoom < 9 && roomNum === 2)) {
+                    z = -ROOM_DEPTH/2 + 0.15;
+                    if (roomNum === 2) {
+                        // Room 2: 9 paintings, spacing = 2.5 units, centered on X
+                        const backSpacing = 2.5;
+                        // Center: total width = (9-1) * 2.5 = 20, so center at centerX
+                        x = centerX + ((indexInRoom - 4) * backSpacing);
+                    } else {
+                        // Room 1/3: 6 paintings, spacing = 2.4 units, moved toward center away from door
+                        const backSpacing = 2.4;
+                        // Center: total width = (6-1) * 2.4 = 12, centered at centerX
+                        x = centerX + ((indexInRoom - 2.5) * backSpacing);
+                    }
+                    rotY = 0;
+                }
+                // Front wall: indices 6-11 (6 paintings) OR 9-17 (9 paintings for Room 2)
+                else if (indexInRoom < 12 || (indexInRoom < 18 && roomNum === 2)) {
+                    z = ROOM_DEPTH/2 - 0.15;
+                    if (roomNum === 2) {
+                        // Room 2: 9 paintings, spacing = 2.5 units, centered on X
+                        const frontSpacing = 2.5;
+                        // Center: total width = (9-1) * 2.5 = 20, so center at centerX
+                        x = centerX + ((indexInRoom - 13) * frontSpacing);
+                    } else {
+                        // Room 1/3: 6 paintings, spacing = 2.4 units, moved toward center away from door
+                        const frontSpacing = 2.4;
+                        // Center: total width = (6-1) * 2.4 = 12, centered at centerX
+                        x = centerX + ((indexInRoom - 8.5) * frontSpacing);
+                    }
+                    rotY = Math.PI;
+                }
+                // Left/Right wall: indices 12-17 (6 paintings) - ONLY for Room 1 and Room 3
+                // These are the walls opposite to the door opening
+                else if (indexInRoom >= 12 && indexInRoom < 18) {
+                    if (roomNum === 1) {
+                        // Left wall (opposite to door): 6 paintings, centered, larger spacing
+                        rotY = Math.PI / 2;
+                        const leftSpacing = 2.4;
+                        // Center Z: total depth = (6-1) * 2.4 = 12, so center at 0, offset = -12/2 = -6
+                        z = ((indexInRoom - 12) * leftSpacing) - 6;
+                        // X: on left wall, centered with offset to avoid penetrating wall
+                        x = centerX - ROOM_WIDTH/2 + 0.8;
+                    } else if (roomNum === 3) {
+                        // Right wall (opposite to door): 6 paintings, centered, larger spacing
+                        rotY = -Math.PI / 2;
+                        const rightSpacing = 2.4;
+                        // Center Z: total depth = (6-1) * 2.4 = 12, so center at 0, offset = -12/2 = -6
+                        z = ((indexInRoom - 12) * rightSpacing) - 6;
+                        // X: on right wall, centered with offset to avoid penetrating wall
+                        x = centerX + ROOM_WIDTH/2 - 0.8;
+                    } else {
+                        // Room 2 doesn't have side walls
+                        return;
+                    }
+                } else {
+                    // Skip any other cases
+                    return;
+                }
+
+                addArtPiece(x, yPos, z, rotY, artW, artH, ethnic.name, ethnic.image, ethnic.description);
+            });
+        }
+
+        function addArtPiece(x, y, z, rotY, w, h, title, imageUrl, desc) {
+            const group = new THREE.Group();
+
+            // Frame
+            const frameGeo = new THREE.BoxGeometry(w + 0.15, h + 0.15, 0.08);
+            const frameMat = new THREE.MeshStandardMaterial({
+                color: 0xd4af37,
+                roughness: 0.4,
+                metalness: 0.8
+            });
+            const frame = new THREE.Mesh(frameGeo, frameMat);
+            frame.receiveShadow = true;
             group.add(frame);
-            group.add(displayMesh);
+
+            // Image
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load("/mln131/" + imageUrl, (texture) => {
+                const picGeo = new THREE.PlaneGeometry(w, h);
+                const picMat = new THREE.MeshStandardMaterial({
+                    map: texture,
+                    roughness: 0.6
+                });
+                const pic = new THREE.Mesh(picGeo, picMat);
+                pic.position.z = 0.05;
+                pic.receiveShadow = true;
+                group.add(pic);
+            });
+
             group.position.set(x, y, z);
-            group.rotation.y = rotationY;
+            group.rotation.y = rotY;
+            group.receiveShadow = true;
             scene.add(group);
 
             objects.push(group);
-            artworks.push({ mesh: group, title, mediaUrl, description, type, videoEl });
-
-            // THÊM SPOTLIGHT CHIẾU VÀO TRANH
-            const spotLight = new THREE.SpotLight(0xF0F0F0, 1.5); // Ánh sáng trắng, cường độ 1.5
-            spotLight.angle = Math.PI / 8; // Góc chiếu hẹp
-            spotLight.penumbra = 0.5;     // Hiệu ứng mềm mại ở viền
-            spotLight.distance = 10;      // Khoảng cách chiếu
-
-            // Vị trí của SpotLight: đặt phía trên và dịch ra khỏi tường một chút
-            let lightX = x;
-            let lightY = roomH - 0.1; // Gần trần
-            let lightZ = z;
-
-            // Xoay ánh sáng để chiếu vào tâm tranh
-            spotLight.target = group;
-            scene.add(spotLight.target);
-
-            // Điều chỉnh vị trí đèn theo hướng tường (rotationY)
-            if (rotationY === 0) { // Tường sau (Z < 0)
-                lightZ = z - 2;    // Đèn lùi về phía trước
-            } else if (rotationY === Math.PI) { // Tường trước (Z > 0)
-                lightZ = z + 2;    // Đèn lùi về phía sau
-            } else if (rotationY === Math.PI / 2) { // Tường trái (X < 0)
-                lightX = x + 2;    // Đèn lùi về phía phải
-            } else if (rotationY === -Math.PI / 2) { // Tường phải (X > 0)
-                lightX = x - 2;    // Đèn lùi về phía trái
-            }
-
-            spotLight.position.set(lightX, lightY, lightZ);
-            scene.add(spotLight);
+            artworks.push({ mesh: group, title, description: desc });
         }
 
-        // Tranh 2 bên cửa (CẬP NHẬT: TĂNG KÍCH THƯỚC TRÊN TƯỜNG CỬA)
-        function addArtOnSideWall(side, room, yPos, width, height, title, imageUrl, description, type = "image") {
-            const thickness = 0.5;
-            const xWall = doorCenterX; // 8
-            const halfDoor = doorWidth / 2; // 1.5
+        function populateEthnicList() {
+            const list = document.getElementById("ethnic-list");
+            if (!ethnicData.length) return;
 
-            // ✅ Kích thước mới cho tranh tường cửa: 3.5 x 2.5
-            const artW = 3.5;
-            const artH = 2.5;
+            let html = "";
+            ethnicData.forEach(ethnic => {
+                const colors = ["#FFD700", "#4CAF50", "#2196F3"];
+                const color = colors[ethnic.room - 1];
+                html += `<div class="ethnic-item" style="border-color: ${color};" onclick="highlightEthnic(${ethnic.id})">
+                    <span style="color: ${color}; font-weight: bold;">${ethnic.id}.</span> ${ethnic.name}
+                </div>`;
+            });
+            list.innerHTML = html;
+        }
 
-            let x, z, rotationY;
-            if (side === "left") {
-                z = -(roomD / 4 + halfDoor / 2); // -3.75
+        function highlightEthnic(id) {
+            const ethnic = ethnicData.find(e => e.id === id);
+            if (ethnic) {
+                teleportToRoom(ethnic.room);
+                document.getElementById("art-title").innerText = ethnic.name;
+                document.getElementById("art-description").innerText = ethnic.description;
+                document.getElementById("info-panel").style.display = "flex";
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.style.display = sidebar.style.display === "none" ? "flex" : "none";
+        }
+
+        function closeInfoPanel() {
+            document.getElementById("info-panel").style.display = "none";
+            activeArtMesh = null;
+        }
+
+        function updateScrollHint() {
+            const description = document.getElementById("art-description");
+            const scrollHint = document.getElementById("scroll-hint");
+
+            // Show hint only if content is scrollable
+            if (description.scrollHeight > description.clientHeight) {
+                scrollHint.style.display = "block";
+                // Reset scroll to top
+                description.scrollTop = 0;
             } else {
-                z = (roomD / 4 + halfDoor / 2); // 3.75
-            }
-
-            if (room === "room1") {
-                x = xWall - thickness / 2 - 0.01; // 7.74
-                rotationY = -Math.PI / 2;
-            } else {
-                x = xWall + thickness / 2 + 0.01; // 8.26
-                rotationY = Math.PI / 2;
-            }
-
-            // Dùng kích thước lớn hơn 3.5x2.5
-            addArtPiece(x, yPos, z, rotationY, artW, artH, title, imageUrl, description, type);
-        }
-
-        // Tranh phòng 1 (CẬP NHẬT: TĂNG KÍCH THƯỚC)
-        function addSampleArtPieces() {
-            // ✅ Kích thước tranh lớn: 3.0 x 2.5 (Phòng 1)
-            const artW = 3.0;
-            const artH = 2.5;
-
-            // Vị trí Y cho tranh ngang (Tường sau và Tường trước)
-            const yPosHorizontal = 3.0; // Đặt cao hơn 3.0
-
-            // Tường sau (z = -5.9) - 3 tranh (ở -5, 0, 5) - GIỮ NGUYÊN
-            const zBack = -roomD / 2 + 0.1; // -5.9
-            addArtPiece(5, yPosHorizontal, zBack, 0, artW, artH, "Cách mạng Tháng Tám 1945 thắng lợi", "content_room1/SSvid.net--Ngày-19-8-1945-Cách-mạng-Tháng-Tám-thành-công_720p.mp4",
-                "Bối cảnh: Cuối năm 1944 – đầu 1945, Chiến tranh thế giới thứ II bước vào giai đoạn kết thúc; Nhật đầu hàng, tình hình chính trị – kinh tế trong nước rối ren, nạn đói lan rộng, lực lượng cách mạng đã chuẩn bị sẵn. Khởi nghĩa: Từ ngày 13/8/1945, Ủy ban Khởi nghĩa ra “Quân lệnh số 1”, phát động Tổng khởi nghĩa. 16/8: Đại hội Tân Trào thông qua 10 chính sách, chọn quốc kỳ, quốc ca, thành lập Chính phủ lâm thời. 19/8: Khởi nghĩa giành chính quyền tại Hà Nội. 23/8 ở Huế, 25/8 ở Sài Gòn, và đến 28/8 hầu hết tỉnh thành giành chính quyền. 30/8: Vua Bảo Đại thoái vị, chấm dứt chế độ quân chủ. Kết quả & ý nghĩa:Ngày 2/9/1945: Hồ Chí Minh đọc Tuyên ngôn Độc lập tại Ba Đình, khai sinh nước Việt Nam Dân chủ Cộng hòa. Lật đổ ách thực dân Pháp, phát xít Nhật và chế độ phong kiến; nhân dân lần đầu tiên làm chủ chính quyền. Mở ra kỷ nguyên độc lập, tự do và định hướng xã hội chủ nghĩa cho đất nước.", "video");
-
-            addArtPiece(0, yPosHorizontal, zBack, 0, artW, artH, "Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập", "content_room1/SSvid.net--Bác-Hồ-đọc-Tuyên-ngôn-Độc-lập-ngày-2-9-1945_480.mp4",
-                "Ngày 2/9/1945: Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập tại Quảng trường Ba Đình, chính thức thành lập nước Việt Nam Dân chủ Cộng hòa. Cách mạng Tháng Tám lật đổ ách thực dân Pháp, phát xít Nhật, bạo quyền phong kiến; mở ra kỷ nguyên độc lập, tự do, nhân dân làm chủ vận mệnh đất nước.", "video");
-
-            addArtPiece(-5, yPosHorizontal, zBack, 0, artW, artH, "HIỆP ĐỊNH GIƠ NE VƠ", "content_room1/SSvid.net--HIỆP-ĐỊNH-GIƠ-NE-VƠ-1954_360.mp4",
-                "Sau Hiệp định Genève 1954, Việt Nam chia hai miền, miền Bắc bắt đầu tiến hành xây dựng chủ nghĩa xã hội: cải cách ruộng đất, quốc hữu hóa các ngành chủ chốt, phát triển công nghiệp chủ yếu phục vụ chiến tranh và phục hồi đất nước.Trong khi đó, miền Nam tiếp tục đấu tranh chống Mỹ — nhân dân miền Bắc vừa sản xuất vừa chi viện, chiến đấu để giải phóng miền Nam, thống nhất đất nước.", "video");
-
-            // Tường trái (x = -7.9) - 2 tranh xếp ngang theo chiều sâu (Z)
-            const xLeft = -roomW / 2 + 0.1; // -7.9
-
-            // Tranh 1 (Phải, Z=3): Giai đoạn đất nước thống nhất (ĐÃ HOÁN ĐỔI)
-            addArtPiece(xLeft, yPosHorizontal, 3, Math.PI / 2, artW, artH, "Giai đoạn đất nước thống nhất, cả nước tiến lên chủ nghĩa xã hội (1976 – 1986)", "content_room1/quốc_hội_5.png",
-                "Thống nhất đất nước dẫn đến nhiệm vụ rất lớn là xây dựng chủ nghĩa xã hội trên cả nước. Tuy nhiên đất nước đối mặt với nhiều khó khăn nặng nề: hậu quả chiến tranh, kinh tế tập trung bao cấp lạc hậu, thiếu thốn về lương thực, hàng tiêu dùng; sản xuất trì trệ. Trong giai đoạn này, một số chính sách từng đặt ra nhưng thực thi còn nhiều bất cập, dẫn đến suy thoái kinh tế – xã hội. Cơ chế kế hoạch hóa tập trung, bao cấp lỏng lẻo dẫn tới thiếu hiệu quả.", "image");
-
-            // Tranh 2 (Trái, Z=-3): Chiến dịch Hồ Chí Minh (GIỮ NGUYÊN)
-            addArtPiece(xLeft, yPosHorizontal, -3, Math.PI / 2, artW, artH, "Chiến dịch Hồ Chí Minh", "content_room1/SSvid.net--Chiến-dịch-Hồ-Chí-Minh-trong-4-phút-VTV24_720pHF.mp4",
-                "Năm 1975, Chiến dịch Hồ Chí Minh thắng lợi, đất nước hoàn toàn thống nhất. Từ năm 1975 vào đầu thời kỳ sau thống nhất, Nhà nước Cộng hòa Xã hội Chủ nghĩa Việt Nam chính thức được thiết lập.", "video");
-
-
-            // Tường trước (z = 5.9) - 2 tranh
-            const zFront = roomD / 2 - 0.1; // 5.9
-
-            // Tranh 1 (Phải, X=2.5): Giai đoạn đổi mới (GIỮ NGUYÊN)
-            addArtPiece(-2.5, yPosHorizontal, zFront, Math.PI, artW, artH, "Giai đoạn đổi mới (1986 – nay)", "content_room1/quốc_hội_6.jpg",
-                "Đại hội VI (1986) của Đảng Cộng sản Việt Nam là bước ngoặt: chính thức mở ra công cuộc Đổi mới toàn diện, chuyển đổi mạnh mẽ cơ chế quản lý kinh tế; mở cửa cho sản xuất hàng hóa; khuyến khích kinh tế nhiều thành phần; cải cách chính trị – xã hội; tăng cường quan hệ quốc tế.Từ 1986–2000: các kế hoạch 5 năm về lương thực, thực phẩm, xuất khẩu, công nghiệp nhẹ, hàng tiêu dùng được đặt ra; đời sống người dân được cải thiện dần.", "image");
-
-            // Tranh 2 (Trái, X=-2.5): Hội nghị Cấp cao ASEAN (ĐÃ HOÁN ĐỔI)
-            addArtPiece(2.5, yPosHorizontal, zFront, Math.PI, artW, artH, "Hội nghị Cấp cao ASEAN", "content_room1/asean.png",
-                "Ảnh chụp các lãnh đạo/đại diện các quốc gia thành viên ASEAN tại Hội nghị Cấp cao ASEAN. Sau năm 2000, Việt Nam đã hội nhập quốc tế sâu rộng, tích cực tham gia các cơ chế khu vực và quốc tế, đặc biệt trong ASEAN. Sự ổn định chính trị – xã hội, những thành tựu kinh tế và đời sống nhân dân được nâng cao đều gắn liền với quá trình mở rộng hợp tác, khẳng định vị thế của Việt Nam trong khu vực Đông Nam Á và trên thế giới", "image");
-
-            // Tranh cạnh cửa phòng 1 (Tăng kích thước: 3.5 x 2.5)
-            //addArtOnSideWall("left", "room1", yPosHorizontal, 3, 2, "Tranh trái P1", "https://picsum.photos/seed/201/800/600", "Tranh bên trái cửa phòng 1");
-            //addArtOnSideWall("right", "room1", yPosHorizontal, 3, 2, "Tranh phải P1", "https://picsum.photos/seed/202/800/600", "Tranh bên phải cửa phòng 1");
-        }
-
-        // Tranh phòng 2 (CẬP NHẬT: TĂNG KÍCH THƯỚC TRÊN TƯỜNG CỬA)
-        function addArtPiecesForSecondRoom(roomOffsetX) {
-            // Kích thước tranh lớn: 3.0 x 2.5 (Phòng 2)
-            const largeArtW = 3.0;
-            const largeArtH = 2.5;
-            const yPos = 3.0; // Đặt cao hơn 3.0
-
-            // Tường sau (z = -5.9) - 3 tranh (ở 11, 16, 21)
-            const zBack = -roomD / 2 + 0.1; // -5.9
-            addArtPiece(roomOffsetX - 5, yPos, zBack, 0, largeArtW, largeArtH, "Gia đình Sa hoàng Nicholas II - Sự biệt lập của chế độ cũ (chụp khoảng năm 1913)", "content_room2/The_Romanovs,_1913.jpg",
-                "Sa hoàng Nicholas II, vị quân chủ chuyên chế cuối cùng của Đế quốc Nga, cùng gia đình thân vương được ghi lại trong một khoảnh khắc tĩnh tại, phản ánh cuộc sống xa hoa và biệt lập của tầng lớp thống trị. Hình ảnh nội thất sang trọng này minh chứng cho sự xa rời thực tế hoàn toàn đối lập với tình cảnh đói nghèo, áp bức của đại đa số người dân Nga. Đây là một biểu tượng mạnh mẽ cho sự rạn nứt không thể hàn gắn giữa chế độ quân chủ Romanov và quần chúng. Nó được xem là cái nhìn cuối cùng vào những năm tháng yên bình trước khi áp lực xã hội trở thành 'thùng thuốc súng' bùng nổ Cách mạng.");
-
-            addArtPiece(roomOffsetX, yPos, zBack, 0, largeArtW, largeArtH, "Quần chúng và binh lính tại Petrograd trong Cách mạng Tháng Hai (1917)", "content_room2/08102017son4.jpg",
-                "Khoảnh khắc mang tính bước ngoặt của Cách mạng Tháng Hai năm 1917 được khắc họa rõ nét trên Đại lộ Nevsky, Petrograd. Cuộc biểu tình khởi đầu từ việc đòi hỏi 'bánh mì' nhanh chóng biến thành một phong trào chính trị chống chế độ. Điểm mấu chốt là sự đào ngũ và liên minh của binh lính với quần chúng; những người lính được lệnh đàn áp đã từ chối tuân lệnh. Sự kiện này truyền tải thông điệp lịch sử về việc chế độ Sa hoàng đã mất hoàn toàn sự ủng hộ của quân đội và nhân dân, dẫn đến việc Nicholas II buộc phải thoái vị, kết thúc triều đại Romanov và thiết lập Chính phủ Lâm thời.");
-
-            addArtPiece(roomOffsetX + 5, yPos, zBack, 0, largeArtW, largeArtH, "Vladimir Lenin diễn thuyết trước Hồng vệ binh tại Moscow (1920)", "content_room2/vladimir-lenin.jpg",
-                "Hình ảnh biểu tượng này làm nổi bật vai trò lãnh đạo tối cao của Vladimir Lenin. Dù chụp năm 1920, nó đại diện cho sức mạnh diễn thuyết của ông trong việc định hướng Cách mạng. Với 'Luận cương tháng Tư' (1917), Lenin kêu gọi lật đổ Chính phủ Lâm thời và chuyển toàn bộ quyền lực về tay Xô-viết. Những khẩu hiệu như 'Hòa bình, Bánh mì, Ruộng đất' đã đáp ứng khát vọng của quần chúng. Nội dung chính là sự khẳng định vai trò trung tâm của Lenin trong việc đoàn kết, truyền lửa và dẫn dắt Đảng Bolshevik giành chính quyền trong Cách mạng Tháng Mười.");
-
-            // Tường phải (x = 23.9) - 1 tranh
-            const xRight = roomOffsetX + roomW / 2 - 0.1; // 23.9
-            addArtPiece(xRight, yPos, 0, -Math.PI / 2, largeArtW, largeArtH, " Cảnh tái hiện cuộc tấn công Cung điện Mùa Đông (từ phim 'Tháng Mười' năm 1928)", "content_room2/winter.jpeg",
-                "Đỉnh cao của Cách mạng Tháng Mười diễn ra vào đêm 7 tháng 11 năm 1917 (25/10 theo lịch cũ), khi lực lượng Bolshevik tấn công Cung điện Mùa Đông, nơi Chính phủ Lâm thời đặt trụ sở. Vì không có ảnh chụp thực tế về khoảnh khắc đột kích, cảnh quay tái hiện đầy kịch tính này của đạo diễn Sergei Eisenstein đã trở thành hình ảnh biểu tượng mạnh mẽ nhất trong ký ức công chúng toàn cầu. Nó đánh dấu sự kiện lịch sử vĩ đại: Bolshevik chính thức nắm giữ chính quyền, mở ra quá trình thành lập Nhà nước Xô-viết và sự thay đổi căn bản trong cấu trúc quyền lực của nước Nga.");
-
-            // Tường trước (z = 5.9) - 3 tranh (ở 11, 16, 21)
-            const zFront = roomD / 2 - 0.1; // 5.9
-            addArtPiece(roomOffsetX - 5, yPos, zFront, Math.PI, largeArtW, largeArtH, "Quốc huy Liên bang Cộng hòa Xã hội chủ nghĩa Xô viết", "content_room2/quoc_huy.png",
-                "Quốc huy chính thức đầu tiên của Liên Xô, được phê chuẩn năm 1923, là một tuyên ngôn hệ tư tưởng và chính trị mạnh mẽ của nhà nước mới. Từng chi tiết trên quốc huy đều mang ý nghĩa biểu tượng sâu sắc: Búa và liềm đặt trên nền quả địa cầu thể hiện sự đoàn kết của giai cấp công nhân và nông dân trên phạm vi quốc tế. Mặt trời mọc phía dưới tượng trưng cho một kỷ nguyên mới tươi sáng của chủ nghĩa xã hội. Đặc biệt, dải băng đỏ quấn quanh ghi khẩu hiệu 'Vô sản toàn thế giới, đoàn kết lại!' bằng ngôn ngữ của các nước cộng hòa sáng lập, nhấn mạnh tính chất quốc tế và khát vọng cách mạng toàn cầu của chính quyền Xô-viết.");
-
-            addArtPiece(roomOffsetX, yPos, zFront, Math.PI, largeArtW, largeArtH, "Đại hội Xô viết toàn Liên bang lần thứ nhất tại Moscow (tháng 12 năm 1922)", "content_room2/12-1922.png",
-                "Sự kiện pháp lý tối cao này khai sinh ra Liên bang Cộng hòa Xã hội chủ nghĩa Xô viết (Liên Xô), được tổ chức tại Nhà hát Bolshoi, Moscow. Sau khi Nội chiến chấm dứt, đây là nơi các phái đoàn từ bốn nước cộng hòa sáng lập — Nga, Ukraina, Byelorussia và Liên bang Ngoại Kavkaz — cùng nhau thông qua Hiệp ước và Tuyên ngôn thành lập Liên bang. Sự nhất trí lịch sử này hợp pháp hóa và củng cố khối liên minh, tạo nên một nhà nước liên bang đa quốc gia mới. Nội dung cốt lõi của đại hội là sự thống nhất chính trị dựa trên nguyên tắc bình đẳng và tự nguyện, nhằm đạt được mục tiêu chung là xây dựng xã hội chủ nghĩa và phòng thủ tập thể trước các mối đe dọa bên ngoài.", "image");
-
-            addArtPiece(roomOffsetX + 5, yPos, zFront, Math.PI, largeArtW, largeArtH, "Lực lượng Hồng quân trên mặt trận Nội chiến", "content_room2/Lenin.jpg",
-                "Bức ảnh lịch sử này là một cái nhìn trực tiếp vào lực lượng Hồng quân (Quân đội Công Nông) giữa bối cảnh Nội chiến Nga khốc liệt. Giai đoạn 1918–1922 là cuộc chiến sống còn của chính quyền Bolshevik non trẻ chống lại sự phản kháng của Bạch vệ (các lực lượng bảo hoàng và chống Bolshevik), cùng với sự can thiệp quân sự từ các cường quốc nước ngoài. Hình ảnh này khắc họa nỗ lực phi thường và tinh thần kiên cường của lực lượng quân sự chủ chốt—lực lượng quyết định việc thiết lập và củng cố quyền lực trung ương trên toàn lãnh thổ Nga sau Cách mạng Tháng Mười. Chính sự chiến thắng của Hồng quân đã bảo vệ thành công chính quyền, đặt nền móng vững chắc cho việc chấm dứt Nội chiến và dẫn đến sự ra đời của Liên bang Xô viết vào năm 1922.", "image");
-
-            // Tranh cạnh cửa phòng 2 (Tăng kích thước: 3.5 x 2.5)
-            addArtOnSideWall("left", "room2", yPos, 3, 2, "Chân dung Joseph Stalin", "content_room2/stalin.jpg",
-                "Tư liệu nhiếp ảnh này khắc họa chân dung Joseph Stalin trong vai trò mới, sau khi Hiến pháp 1924 được ban hành và Vladimir Lenin qua đời. Mặc dù Hiến pháp xác lập quyền lực tập thể thông qua các Xô-viết, nhưng trên thực tế, giai đoạn này chứng kiến cuộc đấu tranh ngầm quyết liệt trong nội bộ Đảng Bolshevik để kế thừa và kiểm soát bộ máy nhà nước. Với vị trí Tổng Bí thư từ năm 1922, Stalin đã lợi dụng cơ cấu tổ chức Đảng và Nhà nước để từng bước củng cố quyền lực tối cao. Sự xuất hiện của ông trong giai đoạn 1924–1929 đại diện cho sự chuyển giao quyền lực và định hình cấu trúc lãnh đạo mới của Liên Xô, báo hiệu một kỷ nguyên tập trung quyền lực sẽ ảnh hưởng sâu sắc đến toàn bộ tiến trình phát triển của nhà nước XHCN này.", "image");
-
-            addArtOnSideWall("right", "room2", yPos, 3, 2, "Trang bìa Hiến pháp Liên Xô năm 1924", "content_room2/hien_phap.jpg",
-                "Hình ảnh trang bìa của bản Hiến pháp đầu tiên của Liên Xô, được phê chuẩn vào ngày 31 tháng 1 năm 1924. Văn bản này đã chính thức hóa và chi tiết hóa những thỏa thuận trong Hiệp ước thành lập Liên Xô năm 1922. Hiến pháp 1924 xác lập cơ cấu quyền lực tối cao của nhà nước, bao gồm Đại hội Xô viết Liên bang là cơ quan quyền lực cao nhất, và giữa các kỳ đại hội là Ủy ban Chấp hành Trung ương (CEC). Nó cũng phân định rõ ràng quyền hạn giữa chính quyền liên bang và các nước cộng hòa thành viên. Việc ban hành Hiến pháp là một bước đi quan trọng để củng cố nền tảng pháp lý, thống nhất hệ thống chính trị, và khẳng định sự tồn tại của Liên Xô như một nhà nước liên bang có chủ quyền trên trường quốc tế.", "image");
-        }
-
-        // ==== SỰ KIỆN NHẤN PHÍM (GIỮ NGUYÊN) ====
-        function onKeyDown(e) {
-            switch (e.code) {
-                case "ArrowUp":
-                case "KeyW": moveState.forward = true; break;
-                case "ArrowLeft":
-                case "KeyA": moveState.left = true; break;
-                case "ArrowDown":
-                case "KeyS": moveState.backward = true; break;
-                case "ArrowRight":
-                case "KeyD": moveState.right = true; break;
+                scrollHint.style.display = "none";
             }
         }
 
-        function onKeyUp(e) {
-            switch (e.code) {
-                case "ArrowUp":
-                case "KeyW": moveState.forward = false; break;
-                case "ArrowLeft":
-                case "KeyA": moveState.left = false; break;
-                case "ArrowDown":
-                case "KeyS": moveState.backward = false; break;
-                case "ArrowRight":
-                case "KeyD": moveState.right = false; break;
-            }
+        function teleportToRoom(roomNum) {
+            if (roomNum < 1 || roomNum > 3) return;
+            const pos = controls.getObject().position;
+            pos.x = ROOM_CENTERS[roomNum - 1];
+            pos.y = 1.6;
+            pos.z = 0;
+            currentRoom = roomNum;
+            updateRoomIndicator();
         }
 
-        // ==== XỬ LÝ CLICK TRANH (GIỮ NGUYÊN) ====
+        function updateRoomIndicator() {
+            document.getElementById("room-indicator").innerText = `Phòng: ${currentRoom}/3`;
+            document.querySelectorAll(".room-dot").forEach((dot, i) => {
+                if (i + 1 === currentRoom) {
+                    dot.classList.add("active");
+                } else {
+                    dot.classList.remove("active");
+                }
+            });
+        }
+
         function onClick(event) {
-            // 1. Dùng raycaster để xác định vật thể được nhắm tới
-            // Gán vị trí tia là (0, 0) - chính giữa màn hình (crosshair)
             raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
             const intersects = raycaster.intersectObjects(objects, true);
 
-            const infoPanel = document.getElementById("info-panel");
-            const isPanelVisible = infoPanel.style.display === "block";
-
-            // 2. Nếu click trúng tranh:
             if (intersects.length > 0) {
                 const group = intersects[0].object.parent;
                 const art = artworks.find(a => a.mesh === group);
-
                 if (art) {
-                    // Dừng tất cả video khác và tắt tiếng
-                    artworks.forEach(a => {
-                        if (a.type === "video" && a.videoEl) {
-                            a.videoEl.pause();
-                            a.videoEl.muted = true;
-                        }
-                    });
-
-                    // Nếu click lại vào tranh đang hiển thị thông tin -> ẩn panel
                     if (activeArtMesh === art.mesh) {
-                        infoPanel.style.display = "none";
-                        activeArtMesh = null;
+                        closeInfoPanel();
                         return;
                     }
-
-                    // Nếu click vào tranh mới (hoặc click vào tranh khi panel đang ẩn)
                     document.getElementById("art-title").innerText = art.title;
                     document.getElementById("art-description").innerText = art.description;
-                    infoPanel.style.display = "block";
-                    activeArtMesh = art.mesh; // Cập nhật tranh đang hoạt động
-
-                    if (art.type === "video" && art.videoEl) {
-                        // Play video và bật tiếng
-                        const video = art.videoEl;
-                        video.muted = false;
-                        video.play().catch(err => console.log("Không phát được:", err));
-                    }
+                    document.getElementById("info-panel").style.display = "flex";
+                    activeArtMesh = art.mesh;
+                    // Update scroll hint visibility
+                    updateScrollHint();
                 }
-            }
-            // 3. Nếu click ra ngoài tranh và panel đang hiển thị -> Ẩn panel:
-            else if (isPanelVisible) {
-                // Tắt video của tranh đang hoạt động (nếu có)
-                if (activeArtMesh) {
-                    const activeArt = artworks.find(a => a.mesh === activeArtMesh);
-                    if (activeArt && activeArt.type === "video" && activeArt.videoEl) {
-                        activeArt.videoEl.pause();
-                        activeArt.videoEl.muted = true;
-                    }
-                    activeArtMesh = null;
-                }
-                infoPanel.style.display = "none";
             }
         }
 
-        // ==== GIỚI HẠN DI CHUYỂN (GIỮ NGUYÊN) ====
+        function onKeyDown(e) {
+            if (!isControlsLocked) return;
+            if (e.code === "KeyW" || e.code === "ArrowUp") moveState.forward = true;
+            if (e.code === "KeyS" || e.code === "ArrowDown") moveState.backward = true;
+            if (e.code === "KeyA" || e.code === "ArrowLeft") moveState.left = true;
+            if (e.code === "KeyD" || e.code === "ArrowRight") moveState.right = true;
+        }
+
+        function onKeyUp(e) {
+            if (e.code === "KeyW" || e.code === "ArrowUp") moveState.forward = false;
+            if (e.code === "KeyS" || e.code === "ArrowDown") moveState.backward = false;
+            if (e.code === "KeyA" || e.code === "ArrowLeft") moveState.left = false;
+            if (e.code === "KeyD" || e.code === "ArrowRight") moveState.right = false;
+        }
+
         function updateMovement(delta) {
-            const speed = 5.0;
-            const velocity = new THREE.Vector3();
+            const speed = 8;
+            const vel = new THREE.Vector3();
 
-            if (moveState.forward) velocity.z += speed;
-            if (moveState.backward) velocity.z -= speed;
-            if (moveState.left) velocity.x -= speed;
-            if (moveState.right) velocity.x += speed;
+            if (moveState.forward) vel.z += speed;
+            if (moveState.backward) vel.z -= speed;
+            if (moveState.left) vel.x -= speed;
+            if (moveState.right) vel.x += speed;
 
-            // chỉ nhân delta 1 lần
-            controls.moveRight(velocity.x * delta);
-            controls.moveForward(velocity.z * delta);
+            controls.moveRight(vel.x * delta);
+            controls.moveForward(vel.z * delta);
 
             const pos = controls.getObject().position;
 
-            // Phòng 1
-            if (currentRoom === 1) {
-                // Giới hạn x (trừ khu vực cửa)
-                if (!(pos.x > (doorCenterX - 1.5) && pos.x < (doorCenterX + 1.5) && pos.z > -1.5 && pos.z < 1.5)) {
-                    pos.x = Math.max(room1MinX, Math.min(room1MaxX, pos.x));
-                }
-                pos.z = Math.max(minZ, Math.min(maxZ, pos.z));
+            // Constrain Z (up-down in room)
+            pos.z = Math.max(Z_BOUNDS.min, Math.min(Z_BOUNDS.max, pos.z));
 
-                // Chuyển phòng
-                if (pos.x >= doorCenterX && pos.z > -1.5 && pos.z < 1.5) { // Cửa rộng 3, nên dùng -1.5 đến 1.5
-                    currentRoom = 2;
-                    document.getElementById("room-indicator").innerText = "Phòng: 2";
+            // Helper function: check if player is in a door zone (can pass through)
+            function canPassThroughDoor(doorX, playerX, playerZ) {
+                const doorZoneWidth = 2.0;
+                const doorZoneDepth = 1.5;
+                return Math.abs(playerX - doorX) < doorZoneWidth &&
+                       Math.abs(playerZ) <= doorZoneDepth;
+            }
+
+            const prevRoom = currentRoom;
+
+            // Simple room detection and boundary enforcement
+            // Room 1: X < 9 (DOOR_CENTER_X1)
+            if (pos.x < DOOR_CENTER_X1) {
+                currentRoom = 1;
+                // Enforce left boundary
+                pos.x = Math.max(ROOM_BOUNDS[0].minX, pos.x);
+                // Allow right boundary only if in door zone
+                if (pos.x > ROOM_BOUNDS[0].maxX && !canPassThroughDoor(DOOR_CENTER_X1, pos.x, pos.z)) {
+                    pos.x = ROOM_BOUNDS[0].maxX;
                 }
             }
-            // Phòng 2
+            // Room 3: X >= 27 (DOOR_CENTER_X2)
+            else if (pos.x >= DOOR_CENTER_X2) {
+                currentRoom = 3;
+                // Allow left boundary only if in door zone
+                if (pos.x < ROOM_BOUNDS[2].minX && !canPassThroughDoor(DOOR_CENTER_X2, pos.x, pos.z)) {
+                    pos.x = ROOM_BOUNDS[2].minX;
+                }
+                // Enforce right boundary
+                pos.x = Math.min(ROOM_BOUNDS[2].maxX, pos.x);
+            }
+            // Room 2: 9 <= X < 27
             else {
-                // Giới hạn x (trừ khu vực cửa)
-                if (!(pos.x > (doorCenterX - 1.5) && pos.x < (doorCenterX + 1.5) && pos.z > -1.5 && pos.z < 1.5)) {
-                    pos.x = Math.max(room2MinX, Math.min(room2MaxX, pos.x));
+                currentRoom = 2;
+                // Room 2 can access both doors, no hard boundaries on sides
+                // Just ensure player doesn't go too far beyond room bounds
+                if (pos.x < ROOM_BOUNDS[1].minX && !canPassThroughDoor(DOOR_CENTER_X1, pos.x, pos.z)) {
+                    pos.x = ROOM_BOUNDS[1].minX;
                 }
-                pos.z = Math.max(minZ, Math.min(maxZ, pos.z));
+                if (pos.x > ROOM_BOUNDS[1].maxX && !canPassThroughDoor(DOOR_CENTER_X2, pos.x, pos.z)) {
+                    pos.x = ROOM_BOUNDS[1].maxX;
+                }
+            }
 
-                // Chuyển phòng
-                if (pos.x <= doorCenterX && pos.z > -1.5 && pos.z < 1.5) {
-                    currentRoom = 1;
-                    document.getElementById("room-indicator").innerText = "Phòng: 1";
-                }
+            if (currentRoom !== prevRoom) {
+                updateRoomIndicator();
             }
         }
 
-        // ==== RESIZE (GIỮ NGUYÊN) ====
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // ==== ANIMATE LOOP (GIỮ NGUYÊN) ====
         function animate() {
             requestAnimationFrame(animate);
             const delta = clock.getDelta();
-            updateMovement(delta);
+            if (isControlsLocked) {
+                updateMovement(delta);
+            }
             renderer.render(scene, camera);
         }
     </script>
 </body>
-
 </html>
