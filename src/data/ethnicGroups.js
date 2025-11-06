@@ -1002,22 +1002,3 @@ export function getLanguageFamilies() {
 // Census date: April 1, 2019
 // Total population: 94,569,072 people
 
-// Language families used by ethnic groups
-export const languageFamilies = [
-  "Việt - Mường (Nam Á)",
-  "Tày - Thái (Thái - Ka Dai)",
-  "Mông - Dao (Mông - Dao)",
-  "Môn - Khơ Me (Nam Á)",
-  "Malayô - Pôlynêxia (Nam Đảo)",
-  "Hán (Hán - Tạng)",
-  "Tạng - Miến (Hán - Tạng)",
-  "Ka Dai (Thái - Ka Dai)"
-];
-
-// Function to get ethnic groups by region
-export const getEthnicGroupsByRegion = (region) => {
-  // This is a placeholder function
-  // In the actual implementation, you would filter ethnicGroups based on region
-  // For now, return all ethnic groups
-  return Object.values(ethnicGroups);
-};
