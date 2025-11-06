@@ -430,7 +430,7 @@
 
             // Load ethnic data
             try {
-                const response = await fetch('/mln131/src/data/ethnicMuseum.json');
+                const response = await fetch('/mln131/ethnicMuseum.json');
                 ethnicData = await response.json();
                 console.log(`✓ Loaded ${ethnicData.length} ethnic groups`);
             } catch (e) {
