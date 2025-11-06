@@ -12,7 +12,7 @@ const Header = () => {
     { name: "Vấn đề Dân tộc", href: ROUTES.ETHNIC_CONCEPT },
     { name: "Bản đồ 54 Dân tộc", href: ROUTES.ETHNIC_MAP },
     { name: "So sánh Quan điểm", href: ROUTES.ETHNIC_DEBATE },
-    { name: "Bảo tàng", href: "/mln131/public/museum.html", external: true },
+    { name: "Bảo tàng", href: "/mln131/museum.html", external: true },
     { name: "Trắc nghiệm", href: ROUTES.QUIZ },
     { name: "Chatbot AI", href: ROUTES.CHATBOT },
   ];

@@ -9,17 +9,24 @@ export default defineConfig({
     plugins: [
         react(),
         {
-            name: "copy-museum-html",
+            name: "copy-museum-files",
             writeBundle() {
-                // Copy museum.html and related files to dist after build
+                // Copy museum.html and data files to dist after build
                 try {
                     copyFileSync(
                         resolve("public/museum.html"),
                         resolve("dist/museum.html")
                     );
                     console.log("✓ Copied museum.html to dist/");
+
+                    // Copy ethnicMuseum.json to dist
+                    copyFileSync(
+                        resolve("src/data/ethnicMuseum.json"),
+                        resolve("dist/ethnicMuseum.json")
+                    );
+                    console.log("✓ Copied ethnicMuseum.json to dist/");
                 } catch (err) {
-                    console.warn("Could not copy museum.html:", err.message);
+                    console.warn("Could not copy museum files:", err.message);
                 }
             },
         },
