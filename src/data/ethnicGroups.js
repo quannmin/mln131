@@ -813,7 +813,190 @@ export const ethnicGroups = {
     rank: 54
   }
 };
+const ethnicByRegion = {
+  "Miền Bắc": [
+    "kinh", "tay", "thai", "muong", "mong", "nung", "dao",
+    "san-chay", "hoa", "san-diu", "tho", "kho-mu", "giay",
+    "gie---trieng", "ha-nhi", "chu-ru", "lao", "khang", "la-chi",
+    "phu-la", "la-hu", "xtieng", "pa-then", "chut", "lu", "lo-lo",
+    "mang", "co-lao", "bo-y", "cong", "ngai", "si-la", "pu-peo"
+  ],
 
+  "Miền Trung": [
+    "kinh", "thai", "cham", "ra-glay", "hre", "xo-dang",
+    "ta-oi", "co-tu", "gié---triêng", "bru---van-kieu"
+  ],
+
+  "Tây Nguyên": [
+    "kinh", "gia-rai", "e-de", "ba-na", "xo-dang", "co-ho",
+    "kho-mu", "gié---triêng", "ra-glay", "tà-ôi", "ma", "co",
+    "cho-ro", "xinh-mun", "chu-ru", "mnong", "brau", "ro-mam"
+  ],
+
+  "Miền Nam": [
+    "kinh", "khmer", "hoa", "cham", "gia-rai", "e-de", "ba-na"
+  ],
+
+  "Cả nước": [
+    "kinh", "tay", "thai", "muong", "mong", "khmer", "nung", "dao",
+    "hoa", "gia-rai", "e-de", "ba-na", "xo-dang", "san-chay",
+    "co-ho", "cham", "san-diu", "hre", "ra-glay", "mnong",
+    "bru---van-kieu", "tho", "kho-mu", "co-tu", "giay",
+    "gie---trieng", "ta-oi", "ma", "co", "cho-ro", "xinh-mun",
+    "ha-nhi", "chu-ru", "lao", "khang", "la-chi", "phu-la",
+    "la-hu", "xtieng", "la-ha", "pa-then", "chut", "lu", "lo-lo",
+    "mang", "co-lao", "bo-y", "cong", "ngai", "si-la", "pu-peo", "o-du"
+  ]
+};
+
+/**
+ * Lấy danh sách dân tộc theo region
+ * @param {string} region - Tên region (VD: "Tây Nguyên", "Miền Bắc")
+ * @returns {Array} - Mảng các dân tộc trong region
+ */
+export function getEthnicGroupsByRegion(region) {
+  const ethnicIds = ethnicByRegion[region] || [];
+  return ethnicIds
+    .map(id => ethnicGroups[id])
+    .filter(Boolean) // Loại bỏ undefined
+    .sort((a, b) => b.population - a.population); // Sắp xếp theo dân số giảm dần
+}
+
+/**
+ * Lấy tất cả regions
+ * @returns {Array} - Mảng tên các regions
+ */
+export function getRegions() {
+  return Object.keys(ethnicByRegion);
+}
+
+/**
+ * Lấy dân tộc theo ID
+ * @param {string} id - ID dân tộc
+ * @returns {Object} - Object dân tộc
+ */
+export function getEthnicGroupById(id) {
+  return ethnicGroups[id];
+}
+
+/**
+ * Kiểm tra dân tộc có tồn tại không
+ * @param {string} id - ID dân tộc
+ * @returns {boolean} - True nếu tồn tại
+ */
+export function hasEthnicGroup(id) {
+  return !!ethnicGroups[id];
+}
+
+export const languageFamilies = {
+  "viet-muong": {
+    id: "viet-muong",
+    name: "Việt - Mường",
+    family: "Nam Á",
+    groups: ["kinh", "muong", "tho", "chut"],
+    description: "Nhóm ngôn ngữ Việt - Mường (Nam Á)",
+    characteristics: "Ngôn ngữ monosyllabic, tonal"
+  },
+
+  "tay-thai": {
+    id: "tay-thai",
+    name: "Tày - Thái",
+    family: "Thái - Ka Dai",
+    groups: ["tay", "thai", "nung", "giay", "lao", "lu", "bo-y", "co-lao"],
+    description: "Nhóm ngôn ngữ Tày - Thái (Thái - Ka Dai)",
+    characteristics: "Ngôn ngữ tonal, có dùng tone marks"
+  },
+
+  "mong-dao": {
+    id: "mong-dao",
+    name: "Mông - Dao",
+    family: "Mông - Dao",
+    groups: ["mong", "dao", "pa-then"],
+    description: "Nhóm ngôn ngữ Mông - Dao",
+    characteristics: "Hệ thống tonal phức tạp"
+  },
+
+  "mon-khmer": {
+    id: "mon-khmer",
+    name: "Môn - Khơ Me",
+    family: "Nam Á",
+    groups: ["khmer", "ba-na", "xo-dang", "co-ho", "kho-mu", "co-tu", "gie---trieng", "ta-oi", "ma", "co", "cho-ro", "xinh-mun", "khang", "xtieng", "la-ha", "mang", "brau", "o-du", "ro-mam"],
+    description: "Nhóm ngôn ngữ Môn - Khơ Me (Nam Á)",
+    characteristics: "Ngôn ngữ không tone, có hệ thống prefix/suffix phong phú"
+  },
+
+  "malayopolynesia": {
+    id: "malayopolynesia",
+    name: "Malayô - Pôlynêxia",
+    family: "Nam Đảo",
+    groups: ["gia-rai", "e-de", "chu-ru", "cham", "ra-glay"],
+    description: "Nhóm ngôn ngữ Malayô - Pôlynêxia (Nam Đảo)",
+    characteristics: "Ngôn ngữ không tone, cấu trúc từ vựng phức tạp"
+  },
+
+  "sino-tibetan": {
+    id: "sino-tibetan",
+    name: "Hán - Tạng",
+    family: "Hán - Tạng",
+    subgroups: {
+      "han": {
+        name: "Hán",
+        groups: ["hoa", "san-diu", "ngai"]
+      },
+      "tibet-burma": {
+        name: "Tạng - Miến",
+        groups: ["ha-nhi", "phu-la", "la-hu", "lo-lo", "cong", "si-la"]
+      }
+    },
+    description: "Nhóm ngôn ngữ Hán - Tạng",
+    characteristics: "Hệ thống tone và phần biệt monosyllabic"
+  },
+
+  "kai-dai": {
+    id: "kai-dai",
+    name: "Ka Dai",
+    family: "Thái - Ka Dai",
+    groups: ["la-chi", "la-ha", "co-lao", "pu-peo"],
+    description: "Nhóm ngôn ngữ Ka Dai (Thái - Ka Dai)",
+    characteristics: "Ngôn ngữ tonal, liên quan đến Thái"
+  }
+};
+
+/**
+ * Lấy language family theo ID
+ * @param {string} id - ID của language family
+ * @returns {Object} - Object language family
+ */
+export function getLanguageFamilyById(id) {
+  return languageFamilies[id];
+}
+
+/**
+ * Lấy các dân tộc thuộc 1 language family
+ * @param {string} familyId - ID của language family
+ * @returns {Array} - Mảng các dân tộc
+ */
+export function getEthnicsByLanguageFamily(familyId) {
+  const family = languageFamilies[familyId];
+  if (!family) return [];
+
+  const groupIds = family.subgroups
+    ? Object.values(family.subgroups).flatMap(g => g.groups)
+    : family.groups;
+
+  return groupIds
+    .map(id => ethnicGroups[id])
+    .filter(Boolean)
+    .sort((a, b) => b.population - a.population);
+}
+
+/**
+ * Lấy tất cả language families
+ * @returns {Array} - Mảng tất cả language families
+ */
+export function getLanguageFamilies() {
+  return Object.values(languageFamilies);
+}
 // Total: 54 ethnic groups
 // Data source: CEMA (Committee for Ethnic Minority Affairs)
 // Census date: April 1, 2019

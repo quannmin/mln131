@@ -1,60 +1,76 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
-import OpenAI from "openai/index.js";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Lottie from "lottie-react";
-import anima from "../assets/anima-bot.json"; // animation robot
+import anima from "../assets/anima-bot.json";
 import { Bot } from "lucide-react";
+
+const API_BASE_URL = "https://springai-r5fr.onrender.com";
+// const API_BASE_URL = "http://localhost:8090";
 
 export default function Chatbot() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const messagesEndRef = useRef(null);
 
-  const SYSTEM_PROMPT = `
-  Bạn là một trợ lý AI chuyên sâu về vấn đề dân tộc ở Việt Nam, đặc biệt là quan hệ giữa các dân tộc theo quan điểm Mác-Lênin và tư tưởng Hồ Chí Minh.
-  Nhiệm vụ của bạn là giải thích rõ ràng, logic, có hệ thống về:
-  - 54 dân tộc anh em Việt Nam và đặc điểm văn hóa
-  - Chính sách dân tộc của Nhà nước Việt Nam (bình đẳng, đoàn kết, tương trợ)
-  - Chênh lệch phát triển giữa dân tộc Kinh và các dân tộc thiểu số (nguyên nhân khách quan: địa lý, lịch sử, trình độ ban đầu)
-  - Các chính sách ưu tiên: giáo dục, y tế, cơ sở hạ tầng, sinh kế
-  - Di sản văn hóa các dân tộc (UNESCO, lễ hội, nghệ thuật)
+  // Auto scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
-  Yêu cầu khi trả lời:
-  1. Trình bày hoàn toàn bằng tiếng Việt, văn phong chuẩn mực, dễ hiểu.
-  2. Sử dụng số liệu thực tế: 54 dân tộc, 85.3% Kinh, 17% hộ nghèo DTTS (2023), 137,000 tỷ đầu tư 2021-2030.
-  3. Nhấn mạnh chênh lệch là do điều kiện khách quan, KHÔNG phải "chiếm dụng".
-  4. Giải thích chính sách ưu tiên của Nhà nước nhằm thu hẹp khoảng cách.
-  5. Kết luận ngắn gọn, nhấn mạnh tinh thần "54 dân tộc - Một tổ quốc Việt Nam".
-  6. Không trả lời ngoài phạm vi vấn đề dân tộc Việt Nam.
-  `;
-
-  const client = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENROUTER_KEY,
-    baseURL: "https://openrouter.ai/api/v1",
-    dangerouslyAllowBrowser: true,
-  });
-
+  /**
+   * Gửi message tới Spring Boot API
+   * Không lưu conversation ID - stateless
+   */
   async function sendMessage() {
     if (!input.trim()) return;
+
+    const userMessage = input.trim();
     setLoading(true);
-    setMessages((p) => [...p, { role: "user", text: input }]);
-    try {
-      const res = await client.chat.completions.create({
-        model: "qwen/qwen3-30b-a3b",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: input },
-        ],
-      });
-      const answer = res.choices[0].message.content;
-      setMessages((p) => [...p, { role: "bot", text: answer }]);
-    } catch {
-      setMessages((p) => [...p, { role: "bot", text: "Lỗi API." }]);
-    }
-    setLoading(false);
+    setError(null);
+
+    // Thêm user message vào chat
+    setMessages((prev) => [...prev, { role: "user", text: userMessage }]);
     setInput("");
+
+    try {
+      // Gọi Spring Boot API - không có username header
+      const url = new URL(`${API_BASE_URL}/mln`);
+      url.searchParams.append("message", userMessage);
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const answer = data.answer || data.message || "Không nhận được phản hồi từ server";
+
+      // Thêm bot response
+      setMessages((prev) => [...prev, { role: "bot", text: answer }]);
+
+    } catch (err) {
+      console.error("Chat Error:", err);
+      setError(err.message);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "bot",
+          text: `❌ Lỗi: ${err.message}\n\nVui lòng kiểm tra:\n1. API server có hoạt động không?\n2. URL API có chính xác không?\n3. Kết nối internet có bình thường không?`
+        }
+      ]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const visibleMessages = messages.slice(-20);
@@ -94,7 +110,9 @@ export default function Chatbot() {
             </div>
             <div className="text-center">
               <p className="text-yellow-100 text-sm font-medium">Trợ lý AI</p>
-              <p className="text-yellow-200 text-xs">Đang hoạt động</p>
+              <p className={`text-xs ${loading ? "text-yellow-300 animate-pulse" : "text-yellow-200"}`}>
+                {loading ? "Đang xử lý..." : "Sẵn sàng"}
+              </p>
             </div>
           </aside>
 
@@ -103,6 +121,13 @@ export default function Chatbot() {
             className="flex-1 bg-white/90 rounded-3xl shadow-2xl border-4 border-yellow-500/70 backdrop-blur-xl flex flex-col"
             style={{ boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.18)" }}
           >
+            {/* Error Banner */}
+            {error && (
+              <div className="p-4 bg-red-100 border-b-2 border-red-400 text-red-700 rounded-t-3xl">
+                <p className="text-sm font-semibold">⚠️ {error}</p>
+              </div>
+            )}
+
             {/* Messages */}
             <div
               className="flex-1 p-8 overflow-y-auto space-y-6 max-h-[70vh]"
@@ -139,13 +164,14 @@ export default function Chatbot() {
                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[80%] px-6 py-4 rounded-2xl shadow text-base whitespace-pre-line ${
-                      m.role === "user"
-                        ? "bg-gradient-to-r from-yellow-100 to-yellow-300 text-gray-900 border border-yellow-400"
-                        : "bg-gradient-to-r from-[#f5e6c8] to-[#fffbe6] text-[#7b1f1f] border border-yellow-300"
-                    }`}
+                    className={`max-w-[80%] px-6 py-4 rounded-2xl shadow text-base whitespace-pre-line ${m.role === "user"
+                      ? "bg-gradient-to-r from-yellow-100 to-yellow-300 text-gray-900 border border-yellow-400"
+                      : "bg-gradient-to-r from-[#f5e6c8] to-[#fffbe6] text-[#7b1f1f] border border-yellow-300"
+                      }`}
                   >
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.text}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {m.text}
+                    </ReactMarkdown>
                   </div>
                 </div>
               ))}
@@ -159,24 +185,25 @@ export default function Chatbot() {
                       fill="none"
                       viewBox="0 0 24 24"
                     >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
+                      ircle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"4"
+                      />
                       <path
                         className="opacity-75"
                         fill="currentColor"
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                      ></path>
+                      />
                     </svg>
                     <span>Đang trả lời...</span>
                   </div>
                 </div>
               )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
@@ -198,7 +225,7 @@ export default function Chatbot() {
                 type="button"
                 onClick={() => !loading && sendMessage()}
                 className="px-7 py-4 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-[#7b1f1f] font-bold shadow-xl hover:scale-105 transition-all duration-200 flex items-center gap-2 disabled:opacity-60 border-2 border-yellow-300"
-                disabled={loading}
+                disabled={loading || !input.trim()}
               >
                 <PaperAirplaneIcon className="w-6 h-6" />
                 Gửi
